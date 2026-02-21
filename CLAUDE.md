@@ -2,7 +2,38 @@
 
 ## Goal
 
-Improve **Qwen2.5-3B-Instruct**'s math reasoning performance (measured on the ORZ math benchmark) while **maintaining** performance on two other benchmarks (SciKnowEval, ToolAlpaca). You have FULL freedom to use ANY approach you can think of.
+**Study how SFT sample count affects math performance vs. catastrophic forgetting in Qwen2.5-3B-Instruct.**
+
+This is a **continual learning research study**, not a pure optimization task. The core question:
+
+> As you increase the number of SFT samples for math reasoning, how does ORZ math accuracy improve, and at what point does the model start forgetting its chemistry (SciKnowEval) and tool-use (ToolAlpaca) capabilities?
+
+### What to produce
+
+A **sample-count curve** mapping N (number of SFT samples) to:
+- ORZ math accuracy (primary metric)
+- SciKnowEval accuracy (forgetting indicator)
+- ToolAlpaca func accuracy / pass rate (forgetting indicator)
+
+Run SFT experiments at these sample counts: **100, 500, 1000, 2000, 5000, 10000**.
+
+### Validity and the forgetting frontier
+
+A run is **"valid"** if SciKnowEval and ToolAlpaca scores stay within 3% of baseline. But **save ALL results** — even invalid runs where forgetting exceeds 3% — because the full curve reveals the forgetting behavior. The agent should focus exploration effort on the **continual learning frontier**: the region where models are near or crossing the 3% forgetting threshold. More data points in the valid region are especially valuable.
+
+### Freedom to explore
+
+The agent has full freedom over:
+- **Data sources** — NuminaMath-CoT, OpenR1 (R1 distillation), self-generated (rejection sampling), or other online math CoT datasets
+- **Data quality/selection** — random sampling, difficulty-based curation, shortest-solution filtering, etc.
+- **Hyperparameters** — LoRA rank, learning rate, epochs, etc.
+- **Any SFT variant** — standard SFT, multi-task regularization, replay, etc.
+
+The key constraint is: at each sample count, find the **best achievable math accuracy** that doesn't break the other tasks (and record what happens when it does break).
+
+### Reporting
+
+Maintain clear, structured reporting throughout. After each experiment, append results to a structured log so progress is always visible. Save all checkpoints and eval results — even "failed" ones where forgetting > 3% — because understanding the full behavior is the point.
 
 ## Environment
 
@@ -11,7 +42,7 @@ Improve **Qwen2.5-3B-Instruct**'s math reasoning performance (measured on the OR
 - **Time budget**: ~8 hours per SLURM job, but multiple jobs run in parallel
 - **Internet**: Available (see restrictions below)
 - **Model**: `Qwen/Qwen2.5-3B-Instruct` (~6GB FP16), loaded via HuggingFace in `utils.py`
-- **Working directory**: `/storage/ice-shared/ae3530b/byuan48/research_agent`
+- **Working directory**: Use the repository root (where this CLAUDE.md lives). In SLURM scripts, use `$SLURM_SUBMIT_DIR` or set it explicitly based on where you submit from.
 
 ## What You Have
 
@@ -49,13 +80,16 @@ All data is local JSON. This is your **train set only** — there is a held-out 
 
 ## Rules
 
-1. **Primary objective**: Maximize ORZ math accuracy
-2. **Constraint**: SciKnowEval and ToolAlpaca scores must not degrade by more than 3% from baseline
-3. **Only use train data** — do not download or access any other splits of these datasets
-4. **Final checkpoint**: Save your best model checkpoint under `checkpoints/` — this will be tested manually against a private held-out test set to measure math, chemistry, and tool-calling ability
-5. **Document what you did** — save a summary of your approach and results to `results/approach_summary.md`
-6. **You can use any approach**: fine-tuning, LoRA, prompt tuning, data augmentation, distillation, downloading additional training data from the internet, etc. Internet is available — use it freely.
-7. **You have access to H200 GPU nodes via SLURM** — multiple parallel jobs allowed. Plan your experiments to maximize parallelism.
+1. **Primary objective**: Map the SFT sample-count vs. math-accuracy vs. forgetting curve
+2. **Sample counts to test**: 100, 500, 1000, 2000, 5000, 10000
+3. **Validity threshold**: A run is "valid" if SciKnowEval and ToolAlpaca degrade by ≤3% from baseline. But **save all results regardless** — invalid runs are still informative.
+4. **Focus on the continual learning frontier**: Spend more effort exploring the valid region and the transition zone where forgetting starts. More data points here = better understanding.
+5. **Save everything**: Every experiment's checkpoint under `checkpoints/`, every eval result under `results/`. Use clear naming: e.g., `sft_numinamath_n1000_r16/` so experiments are traceable.
+6. **Structured progress log**: After each experiment completes, append to `results/experiment_log.json` (or similar) with: sample count, data source, hyperparams, all three benchmark scores, and whether it's valid.
+7. **Only use train data** — do not download or access any other splits of the three benchmark datasets
+8. **You can use any SFT approach**: different data sources, LoRA configs, multi-task regularization, replay, etc. Internet is available for downloading training data (see restrictions below).
+9. **You have access to H200 GPU nodes via SLURM** — multiple parallel jobs allowed. Maximize parallelism.
+10. **Document findings** — save a final summary to `results/approach_summary.md` with the full curve, key insights about forgetting dynamics, and what worked best at each sample count.
 
 ## STRICTLY FORBIDDEN — Data Leakage Prevention
 
@@ -93,8 +127,7 @@ Write a self-contained script, then submit with `sbatch`:
 #SBATCH --cpus-per-task=24
 
 source activate qwen25
-# Go to the project folder before running the script.
-cd /path/to/your/project
+cd $SLURM_SUBMIT_DIR
 
 python your_script.py
 ```
@@ -115,21 +148,27 @@ Key constraint: each submitted script must be fully autonomous — it cannot be 
 
 ## Research Pointers
 
-Relevant recent work to draw ideas from (not prescriptive — read critically and decide what fits):
+Relevant work for ideas (not prescriptive — read critically):
 
-- **Open-Reasoner-Zero** (https://arxiv.org/abs/2503.24290) — scaling RL on base models, open-source
-- **GRPO** (https://arxiv.org/abs/2402.03300) — Group Relative Policy Optimization, memory-efficient RL
-- **TRL GRPOTrainer** (https://huggingface.co/docs/trl/grpo_trainer) — HuggingFace implementation, works with Qwen2.5
-- SFT, LoRA, DPO/ORPO, rejection sampling, curriculum learning, multi-task training are all viable
+### Continual Learning & Catastrophic Forgetting
+- **LoRA as a forgetting mitigation** — small rank = less perturbation to base weights, but also less capacity for new knowledge. How does rank interact with sample count?
+- **Multi-task regularization / replay** — mixing in SciKnowEval + ToolAlpaca data during math SFT. Does this shift the forgetting frontier?
+- **Elastic Weight Consolidation (EWC)**, **experience replay**, and other CL techniques may be worth exploring
+
+### Data Sources & Quality
+- **NuminaMath-CoT** — large math CoT dataset, verified solutions
+- **OpenR1-Math-220k** — DeepSeek R1 distillation traces (high-quality reasoning)
+- **Self-generated** — rejection sampling from the base model itself
+- **Data selection matters** — at small N, which 1000 samples you pick may matter more than the training recipe
 - External math CoT datasets are allowed to download
 
-Key considerations:
-- Pure SFT risks catastrophic forgetting — be careful about SciKnowEval/ToolAlpaca degradation
-- `math_equal()` in `math_grader.py` can serve as a verifiable reward signal (string + numeric + symbolic comparison)
-- The eval scripts use naive single-pass inference — inference-time tricks won't help at test time, everything must be in the weights
-- The model is small (3B) — some approaches that work at 32B+ scale may not transfer directly
+### Key Considerations
+- `math_equal()` in `math_grader.py` can verify answer correctness (useful for filtering/selection)
+- The eval scripts use single-pass inference — everything must be in the weights
+- The model is small (3B) — forgetting dynamics may differ from larger models
+- LoRA rank, learning rate, and number of epochs all interact with sample count
 
-**This is a research task, not just engineering.** Don't just replicate existing methods. Think critically about what works, what doesn't, and why. Propose novel ideas — new reward designs, creative data strategies, hybrid training pipelines, or approaches that don't exist in the literature yet. Existing papers are starting points for inspiration, not recipes to follow. Run real experiments to validate or invalidate your hypotheses.
+**This is a research study, not just engineering.** The goal is to understand the relationship between SFT data volume and forgetting. Think critically about why certain sample counts cause forgetting and others don't. Look for phase transitions, understand the mechanisms, and propose explanations.
 
 ### Important Technical Notes
 
@@ -139,11 +178,3 @@ Key considerations:
 - The eval scripts use naive single-pass inference — so inference-time tricks (majority voting, better prompts) won't help at test time. Everything must be baked into the weights.
 - `math_grader.py` (`math_equal`) does string + numeric + symbolic (sympy) comparison — robust enough to use as GRPO reward signal
 
-## Evaluation
-
-The three eval scripts — `eval_orz.py`, `eval_sciknoweval.py`, `eval_toolalpaca.py` — are the exact same scripts that will be used to evaluate your final checkpoint against the private held-out test set. Use them freely and wisely to measure your progress. All support `--test` (small subset), `--batch_size N`, and `--no_resume`. Results are saved to `results/` as JSON.
-
-Baseline results (unmodified model) are already available:
-- `results/orz_results.json` — ORZ math baseline
-- `results/sciknoweval_results.json` — SciKnowEval baseline
-- `results/toolalpaca_train_results.json` — ToolAlpaca baseline
