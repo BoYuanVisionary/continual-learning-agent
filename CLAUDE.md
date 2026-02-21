@@ -93,7 +93,8 @@ Write a self-contained script, then submit with `sbatch`:
 #SBATCH --cpus-per-task=24
 
 source activate qwen25
-cd /storage/ice-shared/ae3530b/byuan48/research_agent
+# Go to the project folder before running the script.
+cd /path/to/your/project
 
 python your_script.py
 ```
