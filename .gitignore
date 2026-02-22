@@ -1,0 +1,14 @@
+# Model checkpoints (large binary files)
+checkpoints/
+
+# Downloaded datasets (large)
+data/numinamath/
+data/openr1/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# SLURM logs (can be large)
+results/logs/*.out
+results/logs/*.err

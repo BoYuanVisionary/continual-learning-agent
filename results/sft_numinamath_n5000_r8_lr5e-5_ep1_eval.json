@@ -1,0 +1,33 @@
+{
+  "experiment_name": "sft_numinamath_n5000_r8_lr5e-5_ep1",
+  "adapter_path": "checkpoints/sft_numinamath_n5000_r8_lr5e-5_ep1/final_adapter",
+  "timestamp": "2026-02-21 16:03:54",
+  "orz": {
+    "accuracy": 0.224609375,
+    "correct": 230,
+    "total": 1024
+  },
+  "sciknoweval": {
+    "accuracy": 0.3380876914949815,
+    "correct": 640,
+    "total": 1893
+  },
+  "toolalpaca": {
+    "simulated": {
+      "func_accuracy": 0.8,
+      "func_correct": 80,
+      "pass_rate": 0.75,
+      "pass_count": 75,
+      "total": 100
+    },
+    "real": {
+      "func_accuracy": 0.9122807017543859,
+      "func_correct": 104,
+      "pass_rate": 0.9035087719298246,
+      "pass_count": 103,
+      "total": 114
+    }
+  },
+  "valid": true,
+  "forgetting_issues": []
+}

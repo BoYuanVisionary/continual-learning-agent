@@ -1,0 +1,33 @@
+{
+  "experiment_name": "sft_numinamath_n2000_r16_lr2e-4_ep3",
+  "adapter_path": "checkpoints/sft_numinamath_n2000_r16_lr2e-4_ep3/final_adapter",
+  "timestamp": "2026-02-21 14:34:10",
+  "orz": {
+    "accuracy": 0.1962890625,
+    "correct": 201,
+    "total": 1024
+  },
+  "sciknoweval": {
+    "accuracy": 0.33174854727945063,
+    "correct": 628,
+    "total": 1893
+  },
+  "toolalpaca": {
+    "simulated": {
+      "func_accuracy": 0.8,
+      "func_correct": 80,
+      "pass_rate": 0.74,
+      "pass_count": 74,
+      "total": 100
+    },
+    "real": {
+      "func_accuracy": 0.8859649122807017,
+      "func_correct": 101,
+      "pass_rate": 0.868421052631579,
+      "pass_count": 99,
+      "total": 114
+    }
+  },
+  "valid": true,
+  "forgetting_issues": []
+}
