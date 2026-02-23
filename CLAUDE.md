@@ -105,9 +105,16 @@ You MAY download other datasets, papers, code, or resources from the internet �
 
 ## SLURM — Running Jobs on Compute Nodes
 
-This is an HPC cluster managed by SLURM. The login node has no GPUs. To run GPU work, submit jobs to compute nodes.
+This is an HPC cluster managed by SLURM. **You are on the login node** — it has no GPUs. To run GPU work, submit jobs to compute nodes. CPU-only tasks (data preprocessing, result analysis, paper generation, etc.) can be run on  a CPU-only allocation. DO NOT run compuation heavy tasks on the login node
 
-### Interactive allocation (for debugging)
+### CPU-only allocation (for non-GPU tasks)
+```bash
+salloc -N 1 -n 1 -c 12 --mem=160G -t 16:00:00
+# Use this for CPU-heavy tasks: data preprocessing, rejection sampling filtering,
+# running analysis scripts, generating papers, etc.
+```
+
+### Interactive GPU allocation (for debugging)
 ```bash
 salloc -t8:00:00 --gres=gpu:h200:2 --mem=128G -c 24
 # Then run commands interactively on the allocated node

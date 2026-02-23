@@ -826,5 +826,113 @@
     "toolalpaca_sim_pass_rate": 0.72,
     "toolalpaca_real_func_acc": 0.8947368421052632,
     "toolalpaca_real_pass_rate": 0.8947368421052632
+  },
+  {
+    "experiment_name": "sft_numinamath_n500_r8_lr5e-5_ep1_kl0p1",
+    "adapter_path": "checkpoints/sft_numinamath_n500_r8_lr5e-5_ep1_kl0p1/final_adapter",
+    "timestamp": "2026-02-23 00:26:15",
+    "valid": true,
+    "orz_accuracy": 0.275390625,
+    "sciknoweval_accuracy": 0.3486529318541997,
+    "toolalpaca_sim_func_acc": 0.78,
+    "toolalpaca_sim_pass_rate": 0.71,
+    "toolalpaca_real_func_acc": 0.8947368421052632,
+    "toolalpaca_real_pass_rate": 0.8947368421052632
+  },
+  {
+    "experiment_name": "sft_numinamath_n100_r8_lr5e-5_ep1_seed1",
+    "adapter_path": "checkpoints/sft_numinamath_n100_r8_lr5e-5_ep1_seed1/final_adapter",
+    "timestamp": "2026-02-23 00:26:17",
+    "valid": true,
+    "orz_accuracy": 0.28515625,
+    "sciknoweval_accuracy": 0.3269941891178024,
+    "toolalpaca_sim_func_acc": 0.78,
+    "toolalpaca_sim_pass_rate": 0.71,
+    "toolalpaca_real_func_acc": 0.8947368421052632,
+    "toolalpaca_real_pass_rate": 0.8859649122807017
+  },
+  {
+    "experiment_name": "sft_numinamath_n2000_r8_lr5e-5_ep1_seed3",
+    "adapter_path": "checkpoints/sft_numinamath_n2000_r8_lr5e-5_ep1_seed3/final_adapter",
+    "timestamp": "2026-02-23 00:26:15",
+    "valid": true,
+    "orz_accuracy": 0.2236328125,
+    "sciknoweval_accuracy": 0.32435287902799786,
+    "toolalpaca_sim_func_acc": 0.79,
+    "toolalpaca_sim_pass_rate": 0.73,
+    "toolalpaca_real_func_acc": 0.8947368421052632,
+    "toolalpaca_real_pass_rate": 0.8947368421052632
+  },
+  {
+    "experiment_name": "sft_numinamath_n2000_r8_lr5e-5_ep1_seed1",
+    "adapter_path": "checkpoints/sft_numinamath_n2000_r8_lr5e-5_ep1_seed1/final_adapter",
+    "timestamp": "2026-02-23 00:32:08",
+    "valid": true,
+    "orz_accuracy": 0.2236328125,
+    "sciknoweval_accuracy": 0.33438985736925514,
+    "toolalpaca_sim_func_acc": 0.79,
+    "toolalpaca_sim_pass_rate": 0.73,
+    "toolalpaca_real_func_acc": 0.8859649122807017,
+    "toolalpaca_real_pass_rate": 0.868421052631579
+  },
+  {
+    "experiment_name": "sft_numinamath_n1000_r8_lr5e-5_ep1_kl0p1",
+    "adapter_path": "checkpoints/sft_numinamath_n1000_r8_lr5e-5_ep1_kl0p1/final_adapter",
+    "timestamp": "2026-02-23 01:00:00",
+    "valid": true,
+    "orz_accuracy": 0.2666015625,
+    "sciknoweval_accuracy": 0.3338615953512942,
+    "toolalpaca_sim_func_acc": 0.77,
+    "toolalpaca_sim_pass_rate": 0.72,
+    "toolalpaca_real_func_acc": 0.8859649122807017,
+    "toolalpaca_real_pass_rate": 0.868421052631579
+  },
+  {
+    "experiment_name": "sft_numinamath_n500_r8_lr5e-5_ep1_seed1",
+    "adapter_path": "checkpoints/sft_numinamath_n500_r8_lr5e-5_ep1_seed1/final_adapter",
+    "timestamp": "2026-02-23 01:00:02",
+    "valid": true,
+    "orz_accuracy": 0.2802734375,
+    "sciknoweval_accuracy": 0.3312202852614897,
+    "toolalpaca_sim_func_acc": 0.78,
+    "toolalpaca_sim_pass_rate": 0.72,
+    "toolalpaca_real_func_acc": 0.8947368421052632,
+    "toolalpaca_real_pass_rate": 0.8947368421052632
+  },
+  {
+    "experiment_name": "sft_numinamath_n2000_r8_lr5e-5_ep1_seed2",
+    "adapter_path": "checkpoints/sft_numinamath_n2000_r8_lr5e-5_ep1_seed2/final_adapter",
+    "timestamp": "2026-02-23 01:02:42",
+    "valid": true,
+    "orz_accuracy": 0.2216796875,
+    "sciknoweval_accuracy": 0.3449550977284733,
+    "toolalpaca_sim_func_acc": 0.79,
+    "toolalpaca_sim_pass_rate": 0.73,
+    "toolalpaca_real_func_acc": 0.8859649122807017,
+    "toolalpaca_real_pass_rate": 0.8771929824561403
+  },
+  {
+    "experiment_name": "sft_openr1_n1250_r8_lr5e-5_ep1",
+    "adapter_path": "checkpoints/sft_openr1_n1250_r8_lr5e-5_ep1/final_adapter",
+    "timestamp": "2026-02-23 12:23:02",
+    "valid": true,
+    "orz_accuracy": 0.2568359375,
+    "sciknoweval_accuracy": 0.3338615953512942,
+    "toolalpaca_sim_func_acc": 0.78,
+    "toolalpaca_sim_pass_rate": 0.71,
+    "toolalpaca_real_func_acc": 0.8859649122807017,
+    "toolalpaca_real_pass_rate": 0.8771929824561403
+  },
+  {
+    "experiment_name": "sft_openr1_n1500_r8_lr5e-5_ep1",
+    "adapter_path": "checkpoints/sft_openr1_n1500_r8_lr5e-5_ep1/final_adapter",
+    "timestamp": "2026-02-23 13:26:24",
+    "valid": true,
+    "orz_accuracy": 0.2587890625,
+    "sciknoweval_accuracy": 0.3195985208663497,
+    "toolalpaca_sim_func_acc": 0.78,
+    "toolalpaca_sim_pass_rate": 0.71,
+    "toolalpaca_real_func_acc": 0.868421052631579,
+    "toolalpaca_real_pass_rate": 0.8596491228070176
   }
 ]

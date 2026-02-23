@@ -1,0 +1,710 @@
+{
+  "description": "Distribution analysis of SFT data sources vs ORZ evaluation",
+  "sources": {
+    "orz": {
+      "name": "orz",
+      "num_problems": 65199,
+      "problem_length": {
+        "mean": 270.55502385005906,
+        "median": 230.0,
+        "std": 194.5077652187928,
+        "min": 0,
+        "max": 7468,
+        "p25": 155.0,
+        "p75": 335.0
+      },
+      "token_length": {
+        "mean": 83.62861393579657,
+        "median": 71.0,
+        "std": 64.62316763094327
+      },
+      "vocabulary": {
+        "total_tokens": 5452502,
+        "unique_tokens": 25209,
+        "type_token_ratio": 0.0046233820730372955
+      },
+      "answer_types": {
+        "symbolic": 6567,
+        "integer": 43583,
+        "fraction": 11081,
+        "latex_expression": 1327,
+        "decimal": 1569,
+        "other": 1065,
+        "empty": 7
+      },
+      "top_latex_commands": [
+        [
+          "frac",
+          28763
+        ],
+        [
+          "left",
+          14474
+        ],
+        [
+          "right",
+          14474
+        ],
+        [
+          "sqrt",
+          11769
+        ],
+        [
+          "qquad",
+          8458
+        ],
+        [
+          "mathrm",
+          6516
+        ],
+        [
+          "cdot",
+          6189
+        ],
+        [
+          "cdots",
+          5974
+        ],
+        [
+          "times",
+          5141
+        ],
+        [
+          "circ",
+          5120
+        ],
+        [
+          "sin",
+          4811
+        ],
+        [
+          "ldots",
+          4701
+        ],
+        [
+          "angle",
+          4376
+        ],
+        [
+          "cos",
+          4309
+        ],
+        [
+          "in",
+          3329
+        ],
+        [
+          "pi",
+          3293
+        ],
+        [
+          "overline",
+          3276
+        ],
+        [
+          "alpha",
+          3127
+        ],
+        [
+          "text",
+          3125
+        ],
+        [
+          "triangle",
+          2659
+        ]
+      ],
+      "topic_distribution": {
+        "algebra": 0.09023144526756545,
+        "geometry": 0.2020583137778187,
+        "number_theory": 0.20095400236199942,
+        "combinatorics": 0.08121290203837482,
+        "calculus": 0.02776116198101198,
+        "probability": 0.04868172824736576
+      }
+    },
+    "numinamath": {
+      "name": "numinamath",
+      "num_problems": 10000,
+      "problem_length": {
+        "mean": 250.522,
+        "median": 212.0,
+        "std": 177.71348996629376,
+        "min": 13,
+        "max": 4736,
+        "p25": 143.0,
+        "p75": 312.0
+      },
+      "token_length": {
+        "mean": 81.6943,
+        "median": 68.0,
+        "std": 60.68995672687532
+      },
+      "vocabulary": {
+        "total_tokens": 816943,
+        "unique_tokens": 11419,
+        "type_token_ratio": 0.013977719375770402
+      },
+      "solution_length": {
+        "mean": 1149.8598,
+        "median": 981.0,
+        "std": 689.490770746034,
+        "min": 36,
+        "max": 8684
+      },
+      "answer_types": {
+        "integer": 3486,
+        "other": 335,
+        "fraction": 1312,
+        "symbolic": 2547,
+        "latex_expression": 1881,
+        "decimal": 325,
+        "empty": 114
+      },
+      "top_latex_commands": [
+        [
+          "frac",
+          5361
+        ],
+        [
+          "sqrt",
+          1928
+        ],
+        [
+          "textbf",
+          1455
+        ],
+        [
+          "qquad",
+          1309
+        ],
+        [
+          "left",
+          1264
+        ],
+        [
+          "right",
+          1262
+        ],
+        [
+          "overrightarrow",
+          1041
+        ],
+        [
+          "pi",
+          914
+        ],
+        [
+          "text",
+          868
+        ],
+        [
+          "sin",
+          801
+        ],
+        [
+          "in",
+          770
+        ],
+        [
+          "alpha",
+          722
+        ],
+        [
+          "cos",
+          675
+        ],
+        [
+          "circ",
+          584
+        ],
+        [
+          "mathbb",
+          506
+        ],
+        [
+          "dfrac",
+          487
+        ],
+        [
+          "cdot",
+          469
+        ],
+        [
+          "triangle",
+          446
+        ],
+        [
+          "angle",
+          422
+        ],
+        [
+          "mathrm",
+          374
+        ]
+      ],
+      "topic_distribution": {
+        "algebra": 0.1125,
+        "geometry": 0.1798,
+        "number_theory": 0.1049,
+        "combinatorics": 0.0553,
+        "calculus": 0.0102,
+        "probability": 0.041
+      }
+    },
+    "numinamath_hard": {
+      "name": "numinamath_hard",
+      "num_problems": 10000,
+      "problem_length": {
+        "mean": 289.5608,
+        "median": 246.0,
+        "std": 224.19506306642882,
+        "min": 19,
+        "max": 5083,
+        "p25": 168.0,
+        "p75": 357.0
+      },
+      "token_length": {
+        "mean": 91.4382,
+        "median": 75.0,
+        "std": 76.85680959264442
+      },
+      "vocabulary": {
+        "total_tokens": 914382,
+        "unique_tokens": 11260,
+        "type_token_ratio": 0.012314328147316986
+      },
+      "solution_length": {
+        "mean": 2081.2661,
+        "median": 2059.5,
+        "std": 651.9909854367543,
+        "min": 238,
+        "max": 7847
+      },
+      "answer_types": {
+        "integer": 2791,
+        "other": 313,
+        "symbolic": 2704,
+        "empty": 543,
+        "fraction": 1443,
+        "latex_expression": 2062,
+        "decimal": 144
+      },
+      "top_latex_commands": [
+        [
+          "frac",
+          4389
+        ],
+        [
+          "left",
+          1788
+        ],
+        [
+          "right",
+          1788
+        ],
+        [
+          "sqrt",
+          1514
+        ],
+        [
+          "qquad",
+          1013
+        ],
+        [
+          "textbf",
+          934
+        ],
+        [
+          "text",
+          930
+        ],
+        [
+          "cdots",
+          914
+        ],
+        [
+          "ldots",
+          891
+        ],
+        [
+          "angle",
+          862
+        ],
+        [
+          "cdot",
+          831
+        ],
+        [
+          "mathrm",
+          825
+        ],
+        [
+          "in",
+          701
+        ],
+        [
+          "times",
+          686
+        ],
+        [
+          "circ",
+          680
+        ],
+        [
+          "leq",
+          655
+        ],
+        [
+          "triangle",
+          611
+        ],
+        [
+          "sin",
+          571
+        ],
+        [
+          "cos",
+          564
+        ],
+        [
+          "alpha",
+          561
+        ]
+      ],
+      "topic_distribution": {
+        "algebra": 0.106,
+        "geometry": 0.2942,
+        "number_theory": 0.2066,
+        "combinatorics": 0.0832,
+        "calculus": 0.0177,
+        "probability": 0.0489
+      }
+    },
+    "numinamath_comp": {
+      "name": "numinamath_comp",
+      "num_problems": 10000,
+      "problem_length": {
+        "mean": 285.208,
+        "median": 244.0,
+        "std": 203.1972188195498,
+        "min": 21,
+        "max": 4772,
+        "p25": 165.0,
+        "p75": 356.0
+      },
+      "token_length": {
+        "mean": 90.5958,
+        "median": 75.0,
+        "std": 76.79594665319257
+      },
+      "vocabulary": {
+        "total_tokens": 905958,
+        "unique_tokens": 11139,
+        "type_token_ratio": 0.01229527196625009
+      },
+      "solution_length": {
+        "mean": 2076.9733,
+        "median": 2054.0,
+        "std": 643.0744009732545,
+        "min": 231,
+        "max": 9157
+      },
+      "answer_types": {
+        "symbolic": 2735,
+        "latex_expression": 2034,
+        "integer": 2707,
+        "other": 331,
+        "fraction": 1545,
+        "empty": 526,
+        "decimal": 122
+      },
+      "top_latex_commands": [
+        [
+          "frac",
+          4575
+        ],
+        [
+          "left",
+          1730
+        ],
+        [
+          "right",
+          1730
+        ],
+        [
+          "sqrt",
+          1497
+        ],
+        [
+          "qquad",
+          1012
+        ],
+        [
+          "text",
+          970
+        ],
+        [
+          "textbf",
+          894
+        ],
+        [
+          "ldots",
+          875
+        ],
+        [
+          "cdots",
+          839
+        ],
+        [
+          "angle",
+          829
+        ],
+        [
+          "mathrm",
+          703
+        ],
+        [
+          "leq",
+          703
+        ],
+        [
+          "cdot",
+          691
+        ],
+        [
+          "in",
+          681
+        ],
+        [
+          "times",
+          665
+        ],
+        [
+          "triangle",
+          664
+        ],
+        [
+          "alpha",
+          631
+        ],
+        [
+          "circ",
+          626
+        ],
+        [
+          "sin",
+          556
+        ],
+        [
+          "cos",
+          548
+        ]
+      ],
+      "topic_distribution": {
+        "algebra": 0.1016,
+        "geometry": 0.2939,
+        "number_theory": 0.1973,
+        "combinatorics": 0.0808,
+        "calculus": 0.015,
+        "probability": 0.046
+      }
+    },
+    "openr1": {
+      "name": "openr1",
+      "num_problems": 10000,
+      "problem_length": {
+        "mean": 275.8496,
+        "median": 235.0,
+        "std": 198.34517987548878,
+        "min": 22,
+        "max": 6156,
+        "p25": 158.0,
+        "p75": 339.0
+      },
+      "token_length": {
+        "mean": 90.766,
+        "median": 78.0,
+        "std": 65.8049211229677
+      },
+      "vocabulary": {
+        "total_tokens": 907660,
+        "unique_tokens": 12473,
+        "type_token_ratio": 0.013741929797501266
+      },
+      "solution_length": {
+        "mean": 16469.1282,
+        "median": 13051.0,
+        "std": 11481.936851575381,
+        "min": 316,
+        "max": 77466
+      },
+      "top_latex_commands": [
+        [
+          "frac",
+          5832
+        ],
+        [
+          "left",
+          2655
+        ],
+        [
+          "right",
+          2655
+        ],
+        [
+          "qquad",
+          2521
+        ],
+        [
+          "sqrt",
+          2363
+        ],
+        [
+          "mathrm",
+          1906
+        ],
+        [
+          "text",
+          1216
+        ],
+        [
+          "textbf",
+          1188
+        ],
+        [
+          "cdots",
+          985
+        ],
+        [
+          "cdot",
+          965
+        ],
+        [
+          "circ",
+          899
+        ],
+        [
+          "sin",
+          844
+        ],
+        [
+          "cos",
+          804
+        ],
+        [
+          "angle",
+          721
+        ],
+        [
+          "in",
+          713
+        ],
+        [
+          "triangle",
+          654
+        ],
+        [
+          "times",
+          637
+        ],
+        [
+          "pi",
+          626
+        ],
+        [
+          "alpha",
+          587
+        ],
+        [
+          "ldots",
+          553
+        ]
+      ],
+      "topic_distribution": {
+        "algebra": 0.1289,
+        "geometry": 0.2191,
+        "number_theory": 0.1998,
+        "combinatorics": 0.0694,
+        "calculus": 0.0239,
+        "probability": 0.0413
+      }
+    }
+  },
+  "distances_to_orz": {
+    "numinamath": {
+      "unigram_jaccard": 0.3156609195402299,
+      "bigram_jaccard": 0.17799342560989434,
+      "trigram_jaccard": 0.10572232319103976,
+      "problem_length_js": 0.00319146037118369,
+      "solution_length_mean": 1149.8598,
+      "tfidf_cosine": 0.9525271253115273,
+      "topic_js": 0.013075744268600278,
+      "answer_type_js": 0.08848484726506772,
+      "composite_distance": 0.39172356845173717
+    },
+    "numinamath_hard": {
+      "unigram_jaccard": 0.3332724015647278,
+      "bigram_jaccard": 0.21489362389336228,
+      "trigram_jaccard": 0.14147719501056746,
+      "problem_length_js": 0.00319146037118369,
+      "solution_length_mean": 2081.2661,
+      "tfidf_cosine": 0.9000387578464594,
+      "topic_js": 0.004594961087136606,
+      "answer_type_js": 0.12638076817466057,
+      "composite_distance": 0.3890975444456468
+    },
+    "numinamath_comp": {
+      "unigram_jaccard": 0.3310872670011352,
+      "bigram_jaccard": 0.21335269919872107,
+      "trigram_jaccard": 0.14017065584404784,
+      "problem_length_js": 0.00319146037118369,
+      "solution_length_mean": 2076.9733,
+      "tfidf_cosine": 0.888815314787635,
+      "topic_js": 0.006038699241297723,
+      "answer_type_js": 0.12809426477306837,
+      "composite_distance": 0.39319585456345163
+    },
+    "openr1": {
+      "unigram_jaccard": 0.4091470027298904,
+      "bigram_jaccard": 0.2785180492257805,
+      "trigram_jaccard": 0.21455700678989062,
+      "problem_length_js": 0.0007163376206020557,
+      "solution_length_mean": 16469.1282,
+      "tfidf_cosine": 0.9938594766202596,
+      "topic_js": 0.0032397598617984673,
+      "composite_distance": 0.33042880782146694
+    }
+  },
+  "degradation_correlation": [
+    {
+      "source": "numinamath",
+      "composite_distance": 0.39172356845173717,
+      "degradation_slope": -0.020187655824921224,
+      "degradation_range": 0.1064453125
+    },
+    {
+      "source": "numinamath_hard",
+      "composite_distance": 0.3890975444456468,
+      "degradation_slope": -0.018440872518153264,
+      "degradation_range": 0.0849609375
+    },
+    {
+      "source": "openr1",
+      "composite_distance": 0.33042880782146694,
+      "degradation_slope": -0.0674961394784899,
+      "degradation_range": 0.2568359375
+    }
+  ],
+  "numinamath_source_breakdown": {
+    "olympiads": 1705,
+    "synthetic_math": 1993,
+    "cn_k12": 3299,
+    "synthetic_amc": 700,
+    "orca_math": 1836,
+    "aops_forum": 223,
+    "gsm8k": 90,
+    "amc_aime": 47,
+    "math": 107
+  }
+}
