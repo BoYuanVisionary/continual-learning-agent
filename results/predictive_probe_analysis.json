@@ -1,0 +1,622 @@
+{
+  "description": "Predictive direction probe analysis (Experiment A)",
+  "reference_direction": "sft_numinamath_n10000_r8_lr5e-5_ep1",
+  "per_source_train_test": {
+    "numinamath": {
+      "n_train": 6,
+      "n_test": 3,
+      "raw_norm_model": {
+        "a": -0.1375340578784306,
+        "b": 0.31330792318610157,
+        "r2_train": 0.8001018702735134,
+        "mae_test": 0.007202344019937967
+      },
+      "eff_perturb_model": {
+        "a": -0.17514550387553413,
+        "b": 0.3075884758212526,
+        "r2_train": 0.8458769107438869,
+        "mae_test": 0.04282618228337134
+      },
+      "test_predictions": [
+        {
+          "name": "sft_numinamath_n2000_r8_lr5e-5_ep1",
+          "N": 2000,
+          "actual_orz": 0.2333984375,
+          "pred_raw": 0.23026726112653534,
+          "pred_eff": 0.21540767806179018,
+          "error_raw": 0.0031311763734646614,
+          "error_eff": 0.017990759438209825
+        },
+        {
+          "name": "sft_numinamath_n5000_r8_lr5e-5_ep1",
+          "N": 5000,
+          "actual_orz": 0.224609375,
+          "pred_raw": 0.21247802500879817,
+          "pred_eff": 0.17667884466887473,
+          "error_raw": 0.012131349991201829,
+          "error_eff": 0.047930530331125265
+        },
+        {
+          "name": "sft_numinamath_n10000_r8_lr5e-5_ep1",
+          "N": 10000,
+          "actual_orz": 0.2001953125,
+          "pred_raw": 0.1938508068048526,
+          "pred_eff": 0.13763805541922108,
+          "error_raw": 0.006344505695147412,
+          "error_eff": 0.06255725708077892
+        }
+      ]
+    },
+    "numinamath_hard": {
+      "n_train": 3,
+      "n_test": 3,
+      "raw_norm_model": {
+        "a": -0.05686353604061648,
+        "b": 0.3029186485548762,
+        "r2_train": 0.6585398626074225,
+        "mae_test": 0.026350566308837014
+      },
+      "eff_perturb_model": {
+        "a": -0.07749393144724977,
+        "b": 0.30110505856318714,
+        "r2_train": 0.7369806722641045,
+        "mae_test": 0.02058921976091101
+      },
+      "test_predictions": [
+        {
+          "name": "sft_numinamath_hard_n2000_r8_lr5e-5_ep1",
+          "N": 2000,
+          "actual_orz": 0.2607421875,
+          "pred_raw": 0.2689578922068997,
+          "pred_eff": 0.26467760275353414,
+          "error_raw": 0.008215704706899696,
+          "error_eff": 0.003935415253534136
+        },
+        {
+          "name": "sft_numinamath_hard_n5000_r8_lr5e-5_ep1",
+          "N": 5000,
+          "actual_orz": 0.2392578125,
+          "pred_raw": 0.26207393413212693,
+          "pred_eff": 0.25504873216699503,
+          "error_raw": 0.02281612163212693,
+          "error_eff": 0.01579091966699503
+        },
+        {
+          "name": "sft_numinamath_hard_n10000_r8_lr5e-5_ep1",
+          "N": 10000,
+          "actual_orz": 0.208984375,
+          "pred_raw": 0.2570042475874844,
+          "pred_eff": 0.25102569936220387,
+          "error_raw": 0.04801987258748441,
+          "error_eff": 0.04204132436220387
+        }
+      ]
+    },
+    "openr1": {
+      "n_train": 3,
+      "n_test": 5,
+      "raw_norm_model": {
+        "a": -0.0930959601409274,
+        "b": 0.2934440094198246,
+        "r2_train": 0.8889330576176393,
+        "mae_test": 0.0888191942680244
+      },
+      "eff_perturb_model": {
+        "a": -0.19237722643099145,
+        "b": 0.2911387347638584,
+        "r2_train": 0.9134034272995168,
+        "mae_test": 0.11270248093511732
+      },
+      "test_predictions": [
+        {
+          "name": "sft_openr1_n1250_r8_lr5e-5_ep1",
+          "N": 1250,
+          "actual_orz": 0.2568359375,
+          "pred_raw": 0.25443383067937175,
+          "pred_eff": 0.25475954081686897,
+          "error_raw": 0.002402106820628247,
+          "error_eff": 0.002076396683131032
+        },
+        {
+          "name": "sft_openr1_n1500_r8_lr5e-5_ep1",
+          "N": 1500,
+          "actual_orz": 0.2587890625,
+          "pred_raw": 0.2503032105041862,
+          "pred_eff": 0.2503353063300923,
+          "error_raw": 0.008485851995813809,
+          "error_eff": 0.008453756169907678
+        },
+        {
+          "name": "sft_openr1_n2000_r8_lr5e-5_ep1",
+          "N": 2000,
+          "actual_orz": 0.0537109375,
+          "pred_raw": 0.22003001425694038,
+          "pred_eff": 0.2285006397111191,
+          "error_raw": 0.16631907675694038,
+          "error_eff": 0.1747897022111191
+        },
+        {
+          "name": "sft_openr1_n5000_r8_lr5e-5_ep1",
+          "N": 5000,
+          "actual_orz": 0.0244140625,
+          "pred_raw": 0.18068887939416745,
+          "pred_eff": 0.21909995822096623,
+          "error_raw": 0.15627481689416745,
+          "error_eff": 0.19468589572096623
+        },
+        {
+          "name": "sft_openr1_n10000_r8_lr5e-5_ep1",
+          "N": 10000,
+          "actual_orz": 0.03125,
+          "pred_raw": 0.14186411887257216,
+          "pred_eff": 0.2147566538904626,
+          "error_raw": 0.11061411887257216,
+          "error_eff": 0.1835066538904626
+        }
+      ]
+    }
+  },
+  "cross_source_prediction": {
+    "fit_source": "numinamath",
+    "predict_source": "openr1",
+    "n_fit": 9,
+    "n_predict": 8,
+    "raw_norm_mae": 0.049953700706134065,
+    "eff_perturb_mae": 0.09560205216439657,
+    "improvement_pct": -91.38132072897078,
+    "predictions": [
+      {
+        "name": "sft_openr1_n100_r8_lr5e-5_ep1",
+        "N": 100,
+        "actual_orz": 0.28125,
+        "pred_raw": 0.2991022111926685,
+        "pred_eff": 0.29455797817470547
+      },
+      {
+        "name": "sft_openr1_n500_r8_lr5e-5_ep1",
+        "N": 500,
+        "actual_orz": 0.2685546875,
+        "pred_raw": 0.26630931966380084,
+        "pred_eff": 0.281655050895867
+      },
+      {
+        "name": "sft_openr1_n1000_r8_lr5e-5_ep1",
+        "N": 1000,
+        "actual_orz": 0.2392578125,
+        "pred_raw": 0.24447899201015139,
+        "pred_eff": 0.2716987211651821
+      },
+      {
+        "name": "sft_openr1_n1250_r8_lr5e-5_ep1",
+        "N": 1250,
+        "actual_orz": 0.2568359375,
+        "pred_raw": 0.2583360882849694,
+        "pred_eff": 0.27803700364599454
+      },
+      {
+        "name": "sft_openr1_n1500_r8_lr5e-5_ep1",
+        "N": 1500,
+        "actual_orz": 0.2587890625,
+        "pred_raw": 0.25274293141345283,
+        "pred_eff": 0.27557339775452233
+      },
+      {
+        "name": "sft_openr1_n2000_r8_lr5e-5_ep1",
+        "N": 2000,
+        "actual_orz": 0.0537109375,
+        "pred_raw": 0.2117508458592669,
+        "pred_eff": 0.2634149071768617
+      },
+      {
+        "name": "sft_openr1_n5000_r8_lr5e-5_ep1",
+        "N": 5000,
+        "actual_orz": 0.0244140625,
+        "pred_raw": 0.15848011907764162,
+        "pred_eff": 0.25818019948399074
+      },
+      {
+        "name": "sft_openr1_n10000_r8_lr5e-5_ep1",
+        "N": 10000,
+        "actual_orz": 0.03125,
+        "pred_raw": 0.10590860030162841,
+        "pred_eff": 0.2557616590180487
+      }
+    ]
+  },
+  "leave_one_out_cv": {
+    "n_experiments": 23,
+    "raw_norm_loo_mae": 0.029995393822641145,
+    "eff_perturb_loo_mae": 0.05408863266214685,
+    "improvement_pct": -80.32312888427431
+  },
+  "direction_stability": {
+    "numinamath": {
+      "min_N": 50,
+      "max_N": 10000,
+      "cos_min_max": 0.4661337733268738,
+      "consecutive_cosines": [
+        {
+          "from": 50,
+          "to": 100,
+          "cosine": 1.0819865465164185
+        },
+        {
+          "from": 100,
+          "to": 200,
+          "cosine": 1.0765581130981445
+        },
+        {
+          "from": 200,
+          "to": 300,
+          "cosine": 1.0828559398651123
+        },
+        {
+          "from": 300,
+          "to": 500,
+          "cosine": 1.0715810060501099
+        },
+        {
+          "from": 500,
+          "to": 1000,
+          "cosine": 1.0347462892532349
+        },
+        {
+          "from": 1000,
+          "to": 2000,
+          "cosine": 1.0533332824707031
+        },
+        {
+          "from": 2000,
+          "to": 5000,
+          "cosine": 1.0205190181732178
+        },
+        {
+          "from": 5000,
+          "to": 10000,
+          "cosine": 1.019514799118042
+        }
+      ]
+    },
+    "numinamath_hard": {
+      "min_N": 100,
+      "max_N": 10000,
+      "cos_min_max": 0.5102338194847107,
+      "consecutive_cosines": [
+        {
+          "from": 100,
+          "to": 500,
+          "cosine": 0.9739621877670288
+        },
+        {
+          "from": 500,
+          "to": 1000,
+          "cosine": 1.0381083488464355
+        },
+        {
+          "from": 1000,
+          "to": 2000,
+          "cosine": 1.0565046072006226
+        },
+        {
+          "from": 2000,
+          "to": 5000,
+          "cosine": 1.0365092754364014
+        },
+        {
+          "from": 5000,
+          "to": 10000,
+          "cosine": 1.0243600606918335
+        }
+      ]
+    },
+    "openr1": {
+      "min_N": 100,
+      "max_N": 10000,
+      "cos_min_max": 0.2964893877506256,
+      "consecutive_cosines": [
+        {
+          "from": 100,
+          "to": 500,
+          "cosine": 1.0013458728790283
+        },
+        {
+          "from": 500,
+          "to": 1000,
+          "cosine": 1.0203968286514282
+        },
+        {
+          "from": 1000,
+          "to": 1250,
+          "cosine": 1.074445366859436
+        },
+        {
+          "from": 1250,
+          "to": 1500,
+          "cosine": 1.1051901578903198
+        },
+        {
+          "from": 1500,
+          "to": 2000,
+          "cosine": 0.9178813099861145
+        },
+        {
+          "from": 2000,
+          "to": 5000,
+          "cosine": 0.9048131108283997
+        },
+        {
+          "from": 5000,
+          "to": 10000,
+          "cosine": 0.9717639684677124
+        }
+      ]
+    }
+  },
+  "scatter_data": [
+    {
+      "name": "sft_numinamath_hard_n10000_r8_lr5e-5_ep1",
+      "data_source": "numinamath_hard",
+      "num_samples": 10000,
+      "frob_norm": 0.8074489235877991,
+      "effective_perturbation": 0.6462358828068027,
+      "cos_with_ref": 0.8003427386283875,
+      "actual_orz": 0.208984375,
+      "pred_raw": 0.17771060350475346,
+      "pred_eff": 0.19112414066314784
+    },
+    {
+      "name": "sft_numinamath_hard_n1000_r8_lr5e-5_ep1",
+      "data_source": "numinamath_hard",
+      "num_samples": 1000,
+      "frob_norm": 0.4734019935131073,
+      "effective_perturbation": 0.33970341713824403,
+      "cos_with_ref": 0.717579185962677,
+      "actual_orz": 0.2705078125,
+      "pred_raw": 0.24176223711068723,
+      "pred_eff": 0.22931968396824448
+    },
+    {
+      "name": "sft_numinamath_hard_n100_r8_lr5e-5_ep1",
+      "data_source": "numinamath_hard",
+      "num_samples": 100,
+      "frob_norm": 0.09853078424930573,
+      "effective_perturbation": 0.04633679504802801,
+      "cos_with_ref": 0.470277339220047,
+      "actual_orz": 0.2939453125,
+      "pred_raw": 0.3136416982983998,
+      "pred_eff": 0.2658746945243942
+    },
+    {
+      "name": "sft_numinamath_hard_n2000_r8_lr5e-5_ep1",
+      "data_source": "numinamath_hard",
+      "num_samples": 2000,
+      "frob_norm": 0.5972325801849365,
+      "effective_perturbation": 0.47006849606603396,
+      "cos_with_ref": 0.787077784538269,
+      "actual_orz": 0.2607421875,
+      "pred_raw": 0.2180184135559,
+      "pred_eff": 0.2130755154858015
+    },
+    {
+      "name": "sft_numinamath_hard_n5000_r8_lr5e-5_ep1",
+      "data_source": "numinamath_hard",
+      "num_samples": 5000,
+      "frob_norm": 0.7182936072349548,
+      "effective_perturbation": 0.5943217170178379,
+      "cos_with_ref": 0.8274077773094177,
+      "actual_orz": 0.2392578125,
+      "pred_raw": 0.19480563759405534,
+      "pred_eff": 0.19759291637085508
+    },
+    {
+      "name": "sft_numinamath_hard_n500_r8_lr5e-5_ep1",
+      "data_source": "numinamath_hard",
+      "num_samples": 500,
+      "frob_norm": 0.3308262526988983,
+      "effective_perturbation": 0.2061777825969866,
+      "cos_with_ref": 0.6232207417488098,
+      "actual_orz": 0.29296875,
+      "pred_raw": 0.269100339303946,
+      "pred_eff": 0.24595767415743255
+    },
+    {
+      "name": "sft_numinamath_n10000_r8_lr5e-5_ep1",
+      "data_source": "numinamath",
+      "num_samples": 10000,
+      "frob_norm": 0.8685638904571533,
+      "effective_perturbation": 0.9703384708225542,
+      "cos_with_ref": 1.1171756982803345,
+      "actual_orz": 0.2001953125,
+      "pred_raw": 0.16599214985849667,
+      "pred_eff": 0.15073926851314612
+    },
+    {
+      "name": "sft_numinamath_n1000_r8_lr5e-5_ep1",
+      "data_source": "numinamath",
+      "num_samples": 1000,
+      "frob_norm": 0.47766217589378357,
+      "effective_perturbation": 0.36482354855193755,
+      "cos_with_ref": 0.7637689709663391,
+      "actual_orz": 0.23828125,
+      "pred_raw": 0.24094537092700302,
+      "pred_eff": 0.22618958463227762
+    },
+    {
+      "name": "sft_numinamath_n100_r8_lr5e-5_ep1",
+      "data_source": "numinamath",
+      "num_samples": 100,
+      "frob_norm": 0.09752655029296875,
+      "effective_perturbation": 0.04703718729706452,
+      "cos_with_ref": 0.48230135440826416,
+      "actual_orz": 0.306640625,
+      "pred_raw": 0.313834254552132,
+      "pred_eff": 0.2657874219987246
+    },
+    {
+      "name": "sft_numinamath_n2000_r8_lr5e-5_ep1",
+      "data_source": "numinamath",
+      "num_samples": 2000,
+      "frob_norm": 0.6037825345993042,
+      "effective_perturbation": 0.526309815095054,
+      "cos_with_ref": 0.8716877102851868,
+      "actual_orz": 0.2333984375,
+      "pred_raw": 0.21676249637027928,
+      "pred_eff": 0.20606755392511178
+    },
+    {
+      "name": "sft_numinamath_n200_r8_lr5e-5_ep1",
+      "data_source": "numinamath",
+      "num_samples": 200,
+      "frob_norm": 0.17167925834655762,
+      "effective_perturbation": 0.0909595182587708,
+      "cos_with_ref": 0.5298224091529846,
+      "actual_orz": 0.2939453125,
+      "pred_raw": 0.29961588683333795,
+      "pred_eff": 0.26031447057529333
+    },
+    {
+      "name": "sft_numinamath_n300_r8_lr5e-5_ep1",
+      "data_source": "numinamath",
+      "num_samples": 300,
+      "frob_norm": 0.23024460673332214,
+      "effective_perturbation": 0.13232223374167162,
+      "cos_with_ref": 0.5747028589248657,
+      "actual_orz": 0.2744140625,
+      "pred_raw": 0.2883863082946753,
+      "pred_eff": 0.2551604605848743
+    },
+    {
+      "name": "sft_numinamath_n5000_r8_lr5e-5_ep1",
+      "data_source": "numinamath",
+      "num_samples": 5000,
+      "frob_norm": 0.7331267595291138,
+      "effective_perturbation": 0.7474335809693855,
+      "cos_with_ref": 1.019514799118042,
+      "actual_orz": 0.224609375,
+      "pred_raw": 0.1919614634663241,
+      "pred_eff": 0.1785143798858851
+    },
+    {
+      "name": "sft_numinamath_n500_r8_lr5e-5_ep1",
+      "data_source": "numinamath",
+      "num_samples": 500,
+      "frob_norm": 0.329490065574646,
+      "effective_perturbation": 0.21295377550649164,
+      "cos_with_ref": 0.6463131904602051,
+      "actual_orz": 0.2841796875,
+      "pred_raw": 0.26935654572408113,
+      "pred_eff": 0.2451133501148045
+    },
+    {
+      "name": "sft_numinamath_n50_r8_lr5e-5_ep1",
+      "data_source": "numinamath",
+      "num_samples": 50,
+      "frob_norm": 0.05643955618143082,
+      "effective_perturbation": 0.02630838328774443,
+      "cos_with_ref": 0.4661337733268738,
+      "actual_orz": 0.294921875,
+      "pred_raw": 0.3217124562533509,
+      "pred_eff": 0.26837033904626806
+    },
+    {
+      "name": "sft_openr1_n10000_r8_lr5e-5_ep1",
+      "data_source": "openr1",
+      "num_samples": 10000,
+      "frob_norm": 1.628211259841919,
+      "effective_perturbation": 0.39704325865616497,
+      "cos_with_ref": 0.2438524216413498,
+      "actual_orz": 0.03125,
+      "pred_raw": 0.020334008463019804,
+      "pred_eff": 0.22217484077837754
+    },
+    {
+      "name": "sft_openr1_n1000_r8_lr5e-5_ep1",
+      "data_source": "openr1",
+      "num_samples": 1000,
+      "frob_norm": 0.528957724571228,
+      "effective_perturbation": 0.24827115299970615,
+      "cos_with_ref": 0.4693591594696045,
+      "actual_orz": 0.2392578125,
+      "pred_raw": 0.23110973588982914,
+      "pred_eff": 0.2407126207547924
+    },
+    {
+      "name": "sft_openr1_n100_r8_lr5e-5_ep1",
+      "data_source": "openr1",
+      "num_samples": 100,
+      "frob_norm": 0.09564173221588135,
+      "effective_perturbation": 0.03488051878795062,
+      "cos_with_ref": 0.3646997809410095,
+      "actual_orz": 0.28125,
+      "pred_raw": 0.314195657894053,
+      "pred_eff": 0.26730220627279117
+    },
+    {
+      "name": "sft_openr1_n1250_r8_lr5e-5_ep1",
+      "data_source": "openr1",
+      "num_samples": 1250,
+      "frob_norm": 0.41903191804885864,
+      "effective_perturbation": 0.18910343298893117,
+      "cos_with_ref": 0.4512864649295807,
+      "actual_orz": 0.2568359375,
+      "pred_raw": 0.2521873954918295,
+      "pred_eff": 0.24808522713436912
+    },
+    {
+      "name": "sft_openr1_n1500_r8_lr5e-5_ep1",
+      "data_source": "openr1",
+      "num_samples": 1500,
+      "frob_norm": 0.4634014070034027,
+      "effective_perturbation": 0.21210113686924803,
+      "cos_with_ref": 0.45770499110221863,
+      "actual_orz": 0.2587890625,
+      "pred_raw": 0.24367979373310794,
+      "pred_eff": 0.24521959333416923
+    },
+    {
+      "name": "sft_openr1_n2000_r8_lr5e-5_ep1",
+      "data_source": "openr1",
+      "num_samples": 2000,
+      "frob_norm": 0.7885841131210327,
+      "effective_perturbation": 0.3256003645275989,
+      "cos_with_ref": 0.4128923714160919,
+      "actual_orz": 0.0537109375,
+      "pred_raw": 0.18132782557529464,
+      "pred_eff": 0.23107699784868155
+    },
+    {
+      "name": "sft_openr1_n5000_r8_lr5e-5_ep1",
+      "data_source": "openr1",
+      "num_samples": 5000,
+      "frob_norm": 1.21117103099823,
+      "effective_perturbation": 0.37446623947836954,
+      "cos_with_ref": 0.3091770112514496,
+      "actual_orz": 0.0244140625,
+      "pred_raw": 0.10029914369374321,
+      "pred_eff": 0.2249880550714368
+    },
+    {
+      "name": "sft_openr1_n500_r8_lr5e-5_ep1",
+      "data_source": "openr1",
+      "num_samples": 500,
+      "frob_norm": 0.3557817339897156,
+      "effective_perturbation": 0.1553290457926746,
+      "cos_with_ref": 0.4365852177143097,
+      "actual_orz": 0.2685546875,
+      "pred_raw": 0.2643152651117007,
+      "pred_eff": 0.2522936918591222
+    }
+  ],
+  "global_fit": {
+    "raw_norm": {
+      "a": -0.19174441624598085,
+      "b": 0.3325344260065416,
+      "r2": 0.7737667033931511
+    },
+    "eff_perturb": {
+      "a": -0.12460521342100178,
+      "b": 0.271648500760599,
+      "r2": 0.14034870889932938
+    }
+  }
+}

@@ -33,8 +33,10 @@ def parse_args():
     parser.add_argument("--num_samples", type=int, required=True,
                         help="Number of training samples")
     parser.add_argument("--data_source", type=str, default="numinamath",
-                        choices=["numinamath", "numinamath_comp", "numinamath_hard", "openr1", "orz_self", "orz_reject"],
+                        choices=["numinamath", "numinamath_comp", "numinamath_hard", "openr1", "orz_self", "orz_reject", "openr1_truncated", "mixed"],
                         help="Data source for training")
+    parser.add_argument("--mix_ratio", type=float, default=0.5,
+                        help="For 'mixed' source: fraction from NuminaMath (0.0=all OpenR1, 1.0=all NM)")
     parser.add_argument("--filter_sources", type=str, default=None,
                         help="Comma-separated NuminaMath sources to keep (e.g. olympiads,amc_aime,aops_forum)")
     parser.add_argument("--lora_rank", type=int, default=16,
@@ -223,6 +225,115 @@ def load_orz_reject_data(num_samples, seed=42):
     return selected
 
 
+def load_openr1_truncated_data(num_samples, seed=42, max_chars=1500):
+    """Load OpenR1-Math data with solutions truncated to NuminaMath-like length.
+
+    Truncates reasoning at max_chars, then splices the extracted boxed answer
+    back onto the end. Produces ~1600 char solutions (vs 16,469 original).
+    """
+    import re as _re
+
+    def _extract_boxed(text):
+        """Extract answer from \\boxed{...} handling nested braces."""
+        match = _re.search(r"\\boxed\{", text)
+        if match:
+            start = match.end()
+            depth = 1
+            i = start
+            while i < len(text) and depth > 0:
+                if text[i] == "{":
+                    depth += 1
+                elif text[i] == "}":
+                    depth -= 1
+                i += 1
+            if depth == 0:
+                return text[start:i - 1].strip()
+        return None
+
+    data_path = os.path.join(SCRIPT_DIR, "data", "openr1", "openr1_math.json")
+    with open(data_path) as f:
+        data = json.load(f)
+
+    # Extract valid examples with boxed answers
+    # OpenR1 data has 'problem', 'solution', 'source' keys
+    valid = []
+    if data and "messages" in data[0]:
+        # Messages format
+        for ex in data:
+            msgs = ex.get("messages", [])
+            user_msg = None
+            asst_msg = None
+            for m in msgs:
+                if m.get("role") == "user":
+                    user_msg = m.get("content", "")
+                elif m.get("role") == "assistant":
+                    asst_msg = m.get("content", "")
+            if user_msg and asst_msg and "\\boxed{" in asst_msg:
+                answer = _extract_boxed(asst_msg)
+                if answer is not None:
+                    valid.append({"problem": user_msg, "solution": asst_msg, "answer": answer})
+    else:
+        # Direct problem/solution format
+        for ex in data:
+            problem = ex.get("problem", "")
+            solution = ex.get("solution", "")
+            if problem and solution and "\\boxed{" in solution:
+                answer = _extract_boxed(solution)
+                if answer is not None:
+                    valid.append({"problem": problem, "solution": solution, "answer": answer})
+    print(f"OpenR1 truncated: {len(valid)} valid examples with extractable answers")
+
+    rng = random.Random(seed)
+    rng.shuffle(valid)
+    selected = valid[:num_samples]
+
+    # Truncate and splice
+    formatted = []
+    total_len = 0
+    for ex in selected:
+        solution = ex["solution"]
+        answer = ex["answer"]
+        if len(solution) > max_chars:
+            truncated = solution[:max_chars]
+            # Splice answer back
+            truncated = truncated.rstrip() + f"\n\nTherefore, the answer is \\boxed{{{answer}}}."
+        else:
+            truncated = solution
+        total_len += len(truncated)
+        messages = [
+            {"role": "system", "content": MATH_SYSTEM_PROMPT},
+            {"role": "user", "content": ex["problem"]},
+            {"role": "assistant", "content": truncated},
+        ]
+        formatted.append({"messages": messages})
+
+    avg_len = total_len / len(formatted) if formatted else 0
+    print(f"Loaded {len(formatted)} OpenR1-truncated examples (avg solution length: {avg_len:.0f} chars)")
+    return formatted
+
+
+def load_mixed_data(num_samples, mix_ratio=0.5, seed=42):
+    """Load mixed NuminaMath + OpenR1 data.
+
+    Args:
+        num_samples: Total number of samples
+        mix_ratio: Fraction from NuminaMath (0.0 = all OpenR1, 1.0 = all NM)
+        seed: Random seed
+    """
+    n_nm = int(num_samples * mix_ratio)
+    n_or = num_samples - n_nm
+
+    nm_data = load_numinamath_data(n_nm, seed) if n_nm > 0 else []
+    or_data = load_openr1_data(n_or, seed) if n_or > 0 else []
+
+    combined = nm_data + or_data
+    rng = random.Random(seed)
+    rng.shuffle(combined)
+
+    print(f"Mixed data: {n_nm} NuminaMath + {n_or} OpenR1 = {len(combined)} total (ratio={mix_ratio})")
+    return combined
+
+
 def main():
     args = parse_args()
     random.seed(args.seed)
@@ -264,6 +375,10 @@ def main():
         train_data = load_orz_self_data(args.num_samples, args.seed)
     elif args.data_source == "orz_reject":
         train_data = load_orz_reject_data(args.num_samples, args.seed)
+    elif args.data_source == "openr1_truncated":
+        train_data = load_openr1_truncated_data(args.num_samples, args.seed)
+    elif args.data_source == "mixed":
+        train_data = load_mixed_data(args.num_samples, args.mix_ratio, args.seed)
     else:
         raise ValueError(f"Unknown data source: {args.data_source}")
 

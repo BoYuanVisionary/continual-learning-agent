@@ -218,8 +218,17 @@ def parse_markdown(md_text):
 
 
 def main():
-    md_path = os.path.join(SCRIPT_DIR, "results", "approach_summary.md")
-    pdf_path = os.path.join(SCRIPT_DIR, "results", "approach_summary.pdf")
+    import sys
+
+    if len(sys.argv) >= 3:
+        md_path = sys.argv[1]
+        pdf_path = sys.argv[2]
+    elif len(sys.argv) == 2:
+        md_path = sys.argv[1]
+        pdf_path = md_path.replace(".md", ".pdf")
+    else:
+        md_path = os.path.join(SCRIPT_DIR, "results", "approach_summary.md")
+        pdf_path = os.path.join(SCRIPT_DIR, "results", "approach_summary.pdf")
 
     with open(md_path) as f:
         md_text = f.read()

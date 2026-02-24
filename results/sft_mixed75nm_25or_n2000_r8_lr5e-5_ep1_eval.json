@@ -1,0 +1,33 @@
+{
+  "experiment_name": "sft_mixed75nm_25or_n2000_r8_lr5e-5_ep1",
+  "adapter_path": "checkpoints/sft_mixed75nm_25or_n2000_r8_lr5e-5_ep1/final_adapter",
+  "timestamp": "2026-02-24 03:55:16",
+  "orz": {
+    "accuracy": 0.232421875,
+    "correct": 238,
+    "total": 1024
+  },
+  "sciknoweval": {
+    "accuracy": 0.33914421553090335,
+    "correct": 642,
+    "total": 1893
+  },
+  "toolalpaca": {
+    "simulated": {
+      "func_accuracy": 0.79,
+      "func_correct": 79,
+      "pass_rate": 0.73,
+      "pass_count": 73,
+      "total": 100
+    },
+    "real": {
+      "func_accuracy": 0.8771929824561403,
+      "func_correct": 100,
+      "pass_rate": 0.868421052631579,
+      "pass_count": 99,
+      "total": 114
+    }
+  },
+  "valid": true,
+  "forgetting_issues": []
+}

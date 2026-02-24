@@ -758,6 +758,361 @@ def fig_source_similarity_summary(direction_data):
     print("  Saved fig_source_similarity.png")
 
 
+def fig8_predictive_probes():
+    """Fig 8: Predictive probe analysis — predicted vs actual ORZ accuracy."""
+    probe_path = os.path.join(RESULTS_DIR, "predictive_probe_analysis.json")
+    if not os.path.exists(probe_path):
+        print("  Skipping fig8 — no predictive probe data")
+        return
+
+    with open(probe_path) as f:
+        probe_data = json.load(f)
+
+    scatter_data = probe_data.get("scatter_data", [])
+    if not scatter_data:
+        print("  Skipping fig8 — no scatter data")
+        return
+
+    global_fit = probe_data.get("global_fit", {})
+    cross = probe_data.get("cross_source_prediction", {})
+
+    fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+
+    # Panel (a): Predicted vs actual — raw norm model
+    ax = axes[0]
+    for entry in scatter_data:
+        source = entry["data_source"]
+        if source not in SOURCE_COLORS:
+            continue
+        ax.scatter(entry["pred_raw"], entry["actual_orz"],
+                   c=SOURCE_COLORS[source], marker=SOURCE_MARKERS.get(source, "o"),
+                   s=80, alpha=0.8, edgecolors='black', linewidths=0.5)
+
+    # Perfect prediction line
+    all_vals = [e["actual_orz"] for e in scatter_data] + [e["pred_raw"] for e in scatter_data]
+    lo, hi = min(all_vals) - 0.02, max(all_vals) + 0.02
+    ax.plot([lo, hi], [lo, hi], '--', color='gray', alpha=0.5, label='Perfect prediction')
+
+    r2_raw = global_fit.get("raw_norm", {}).get("r2", 0)
+    ax.set_xlabel('Predicted ORZ Accuracy (raw norm model)')
+    ax.set_ylabel('Actual ORZ Accuracy')
+    ax.set_title(f'(a) Raw Norm Model (R$^2$ = {r2_raw:.3f})')
+    ax.grid(True, alpha=0.3)
+    handles = [plt.Line2D([0], [0], marker=SOURCE_MARKERS.get(s, "o"), color='w',
+               markerfacecolor=SOURCE_COLORS[s], markersize=8,
+               markeredgecolor='black', markeredgewidth=0.5, label=SOURCE_LABELS.get(s, s))
+               for s in set(e["data_source"] for e in scatter_data) if s in SOURCE_COLORS]
+    ax.legend(handles=handles, loc='upper left')
+
+    # Panel (b): Predicted vs actual — effective perturbation model
+    ax = axes[1]
+    for entry in scatter_data:
+        source = entry["data_source"]
+        if source not in SOURCE_COLORS:
+            continue
+        ax.scatter(entry["pred_eff"], entry["actual_orz"],
+                   c=SOURCE_COLORS[source], marker=SOURCE_MARKERS.get(source, "o"),
+                   s=80, alpha=0.8, edgecolors='black', linewidths=0.5)
+
+    all_vals = [e["actual_orz"] for e in scatter_data] + [e["pred_eff"] for e in scatter_data]
+    lo, hi = min(all_vals) - 0.02, max(all_vals) + 0.02
+    ax.plot([lo, hi], [lo, hi], '--', color='gray', alpha=0.5, label='Perfect prediction')
+
+    r2_eff = global_fit.get("eff_perturb", {}).get("r2", 0)
+    ax.set_xlabel('Predicted ORZ Accuracy (effective perturbation model)')
+    ax.set_ylabel('Actual ORZ Accuracy')
+    ax.set_title(f'(b) Effective Perturbation Model (R$^2$ = {r2_eff:.3f})')
+    ax.grid(True, alpha=0.3)
+    ax.legend(handles=handles, loc='upper left')
+
+    # Annotate cross-source prediction results
+    if cross:
+        raw_mae = cross.get("raw_norm_mae", 0)
+        eff_mae = cross.get("eff_perturb_mae", 0)
+        ax.text(0.95, 0.05,
+                f"Cross-source MAE:\nRaw: {raw_mae:.3f}\nEff: {eff_mae:.3f}",
+                transform=ax.transAxes, ha='right', va='bottom', fontsize=9,
+                bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
+
+    fig.tight_layout()
+    fig.savefig(os.path.join(FIG_DIR, "fig8_predictive_probes.png"), dpi=200, bbox_inches='tight')
+    plt.close(fig)
+    print("  Saved fig8_predictive_probes.png")
+
+
+def fig9_truncation_control(exp_log):
+    """Fig 9: Original vs truncated OpenR1 comparison (Experiment B)."""
+    # Look for truncated OpenR1 results
+    trunc_exps = []
+    orig_exps = []
+
+    for exp in exp_log:
+        name = exp.get("experiment_name", exp.get("name", ""))
+        if not is_standard_config(name):
+            continue
+        source = parse_source(name)
+        n_val = parse_n(name)
+        if source == "openr1":
+            orig_exps.append((n_val, exp))
+
+    # Load truncated results from eval files
+    for n_val in [1000, 2000, 5000]:
+        eval_path = os.path.join(RESULTS_DIR, f"sft_openr1trunc_n{n_val}_r8_lr5e-5_ep1_eval.json")
+        if os.path.exists(eval_path):
+            with open(eval_path) as f:
+                data = json.load(f)
+            trunc_exps.append((n_val, {
+                "orz_accuracy": data.get("orz", {}).get("accuracy", 0),
+                "experiment_name": f"sft_openr1trunc_n{n_val}_r8_lr5e-5_ep1"
+            }))
+
+    if not trunc_exps:
+        print("  Skipping fig9 — no truncated OpenR1 data yet")
+        return
+
+    fig, axes = plt.subplots(1, 3, figsize=(16, 5))
+
+    # Panel (a): ORZ accuracy comparison
+    ax = axes[0]
+    orig_exps.sort()
+    trunc_exps.sort()
+
+    if orig_exps:
+        ns_o = [e[0] for e in orig_exps]
+        accs_o = [e[1].get("orz_accuracy", 0) for e in orig_exps]
+        ax.plot(ns_o, accs_o, '-o', color=SOURCE_COLORS["openr1"], label='OpenR1 (original)', linewidth=2)
+
+    ns_t = [e[0] for e in trunc_exps]
+    accs_t = [e[1].get("orz_accuracy", 0) for e in trunc_exps]
+    ax.plot(ns_t, accs_t, '-s', color='#FF8A80', label='OpenR1 (truncated)', linewidth=2)
+
+    # NuminaMath for reference
+    nm_exps = [(parse_n(e.get("experiment_name", "")), e) for e in exp_log
+               if parse_source(e.get("experiment_name", "")) == "numinamath" and is_standard_config(e.get("experiment_name", ""))]
+    nm_exps.sort()
+    if nm_exps:
+        ax.plot([e[0] for e in nm_exps], [e[1].get("orz_accuracy", 0) for e in nm_exps],
+                '--D', color=SOURCE_COLORS["numinamath"], alpha=0.5, label='NuminaMath (ref)')
+
+    ax.axhline(y=0.2891, color='gray', linestyle=':', alpha=0.5, label='Baseline')
+    ax.set_xlabel('Number of SFT Samples (N)')
+    ax.set_ylabel('ORZ Math Accuracy')
+    ax.set_title('(a) ORZ Accuracy: Original vs Truncated')
+    ax.set_xscale('log')
+    ax.legend(fontsize=8)
+    ax.grid(True, alpha=0.3)
+
+    # Panel (b): GSM8K boxed rate comparison
+    ax = axes[1]
+    for label_prefix, name_pattern, color, marker in [
+        ("Original", "sft_openr1_n{}_r8_lr5e-5_ep1", SOURCE_COLORS["openr1"], 'o'),
+        ("Truncated", "sft_openr1trunc_n{}_r8_lr5e-5_ep1", '#FF8A80', 's'),
+    ]:
+        ns_plot = []
+        boxed_rates = []
+        accs_plot = []
+        for n_val in [100, 500, 1000, 1250, 1500, 2000, 5000, 10000]:
+            name = name_pattern.format(n_val)
+            strict_path = os.path.join(RESULTS_DIR, f"{name}_strict_gsm8k.json")
+            if os.path.exists(strict_path):
+                with open(strict_path) as fp:
+                    data = json.load(fp)
+                gsm = data.get("gsm8k", {})
+                total = gsm.get("total", 1)
+                boxed = gsm.get("boxed_found", 0)
+                ns_plot.append(n_val)
+                boxed_rates.append(boxed / total if total > 0 else 0)
+                accs_plot.append(gsm.get("accuracy", 0))
+
+        if ns_plot:
+            ax.plot(ns_plot, boxed_rates, f'-{marker}', color=color, label=f'{label_prefix} boxed rate')
+
+    ax.axhline(y=0.999, color='gray', linestyle=':', alpha=0.5, label='Baseline')
+    ax.set_xlabel('Number of SFT Samples (N)')
+    ax.set_ylabel('GSM8K Boxed Rate')
+    ax.set_title('(b) Format Compliance')
+    ax.set_xscale('log')
+    ax.legend(fontsize=8)
+    ax.grid(True, alpha=0.3)
+
+    # Panel (c): Direction cosine with NM reference
+    ax = axes[2]
+    first_or = True
+    direction_path = os.path.join(RESULTS_DIR, "lora_direction_analysis.json")
+    if os.path.exists(direction_path):
+        with open(direction_path) as f:
+            dir_data = json.load(f)
+        eff_perturbs = dir_data.get("effective_perturbations", [])
+        for entry in eff_perturbs:
+            source = entry.get("data_source", "")
+            if source == "openr1":
+                ax.scatter(entry["num_samples"], entry["cos_with_ref"],
+                           c=SOURCE_COLORS["openr1"], marker='o', s=80,
+                           edgecolors='black', linewidths=0.5,
+                           label='Original' if first_or else '')
+                first_or = False
+
+    # Check for truncated direction data from new_direction_analysis.json
+    first_trunc = True
+    new_dir_path = os.path.join(RESULTS_DIR, "new_direction_analysis.json")
+    if os.path.exists(new_dir_path):
+        with open(new_dir_path) as f:
+            new_dir = json.load(f)
+        for name, entry in new_dir.items():
+            if name.startswith("_"):
+                continue
+            if "openr1trunc" in name:
+                n_match = re.search(r'_n(\d+)_', name)
+                n_val = int(n_match.group(1)) if n_match else 0
+                cos_val = entry.get("cos_with_nm10k_ref", 0)
+                ax.scatter(n_val, cos_val, c='#FF8A80', marker='s', s=80,
+                           edgecolors='black', linewidths=0.5,
+                           label='Truncated' if first_trunc else '')
+                first_trunc = False
+
+    ax.set_xlabel('Number of SFT Samples (N)')
+    ax.set_ylabel('Cosine Similarity with NM-10K ref')
+    ax.set_title('(c) Direction Alignment')
+    ax.set_xscale('log')
+    ax.legend(fontsize=8)
+    ax.grid(True, alpha=0.3)
+
+    fig.tight_layout()
+    fig.savefig(os.path.join(FIG_DIR, "fig9_truncation_control.png"), dpi=200, bbox_inches='tight')
+    plt.close(fig)
+    print("  Saved fig9_truncation_control.png")
+
+
+def fig10_mixing_intervention(exp_log):
+    """Fig 10: Mix ratio vs ORZ accuracy + direction cosine (Experiment C)."""
+    # Collect mixed experiment results
+    mix_results = []
+    for ratio_nm, ratio_or in [(75, 25), (50, 50), (25, 75)]:
+        name = f"sft_mixed{ratio_nm}nm_{ratio_or}or_n2000_r8_lr5e-5_ep1"
+        eval_path = os.path.join(RESULTS_DIR, f"{name}_eval.json")
+        if os.path.exists(eval_path):
+            with open(eval_path) as f:
+                data = json.load(f)
+            orz_acc = data.get("orz", {}).get("accuracy", 0)
+            mix_results.append({
+                "nm_pct": ratio_nm,
+                "or_pct": ratio_or,
+                "mix_ratio": ratio_nm / 100.0,
+                "orz_accuracy": orz_acc,
+                "name": name,
+            })
+
+    if not mix_results:
+        print("  Skipping fig10 — no mixed experiment data yet")
+        return
+
+    # Add pure endpoints from existing data
+    # NM N=2000
+    for exp in exp_log:
+        ename = exp.get("experiment_name", exp.get("name", ""))
+        if ename == "sft_numinamath_n2000_r8_lr5e-5_ep1":
+            mix_results.append({
+                "nm_pct": 100, "or_pct": 0, "mix_ratio": 1.0,
+                "orz_accuracy": exp.get("orz_accuracy", 0), "name": ename,
+            })
+        elif ename == "sft_openr1_n2000_r8_lr5e-5_ep1":
+            mix_results.append({
+                "nm_pct": 0, "or_pct": 100, "mix_ratio": 0.0,
+                "orz_accuracy": exp.get("orz_accuracy", 0), "name": ename,
+            })
+
+    mix_results.sort(key=lambda x: x["mix_ratio"])
+
+    fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+
+    # Panel (a): Mix ratio vs ORZ accuracy
+    ax = axes[0]
+    ratios = [r["mix_ratio"] for r in mix_results]
+    accs = [r["orz_accuracy"] for r in mix_results]
+
+    ax.plot(ratios, accs, '-o', color='#673AB7', linewidth=2, markersize=10)
+    for r in mix_results:
+        ax.annotate(f"{r['nm_pct']}%NM/{r['or_pct']}%OR",
+                    (r["mix_ratio"], r["orz_accuracy"]),
+                    textcoords="offset points", xytext=(5, 8), fontsize=8)
+
+    ax.axhline(y=0.2891, color='gray', linestyle=':', alpha=0.5, label='Baseline')
+    ax.set_xlabel('NuminaMath Fraction in Mix')
+    ax.set_ylabel('ORZ Math Accuracy')
+    ax.set_title('(a) ORZ Accuracy vs Mix Ratio (N=2000)')
+    ax.set_xlim(-0.05, 1.05)
+    ax.grid(True, alpha=0.3)
+    ax.legend()
+
+    # Panel (b): Direction cosine + effective perturbation
+    ax = axes[1]
+    # Load direction data from new_direction_analysis.json
+    new_dir_path = os.path.join(RESULTS_DIR, "new_direction_analysis.json")
+    dir_data_available = False
+    if os.path.exists(new_dir_path):
+        with open(new_dir_path) as f:
+            new_dir = json.load(f)
+
+        ratios_d = []
+        cosines = []
+        eff_perturbs = []
+
+        # Mixed experiments
+        for name, entry in new_dir.items():
+            if name.startswith("_"):
+                continue
+            m = re.search(r'mixed(\d+)nm', name)
+            if m:
+                nm_pct = int(m.group(1))
+                ratios_d.append(nm_pct / 100.0)
+                cosines.append(entry.get("cos_with_nm10k_ref", 0))
+                eff_perturbs.append(entry.get("effective_perturbation", 0))
+
+        # Add pure endpoints from reference cosines
+        ref_cos = new_dir.get("_reference_cosines", {})
+        if ref_cos:
+            # Pure NM (ratio=1.0)
+            ratios_d.append(1.0)
+            cosines.append(ref_cos.get("nm2k_vs_nm10k_ref", 0))
+            eff_perturbs.append(ref_cos.get("nm2k_norm", 0) * ref_cos.get("nm2k_vs_nm10k_ref", 0))
+            # Pure OR1 (ratio=0.0)
+            ratios_d.append(0.0)
+            cosines.append(ref_cos.get("or2k_vs_nm10k_ref", 0))
+            eff_perturbs.append(ref_cos.get("or2k_norm", 0) * ref_cos.get("or2k_vs_nm10k_ref", 0))
+
+        if ratios_d:
+            dir_data_available = True
+            # Sort by ratio
+            pairs = sorted(zip(ratios_d, cosines, eff_perturbs))
+            ratios_d = [p[0] for p in pairs]
+            cosines = [p[1] for p in pairs]
+            eff_perturbs = [p[2] for p in pairs]
+
+            ax.plot(ratios_d, cosines, '-o', color='#2196F3', label='cos(dW, NM-ref)', linewidth=2)
+            ax2 = ax.twinx()
+            ax2.plot(ratios_d, eff_perturbs, '--s', color='#F44336', label='Effective perturbation', linewidth=2)
+            ax2.set_ylabel('Effective Perturbation', color='#F44336')
+
+            lines1, labels1 = ax.get_legend_handles_labels()
+            lines2, labels2 = ax2.get_legend_handles_labels()
+            ax.legend(lines1 + lines2, labels1 + labels2, loc='center right')
+
+    if not dir_data_available:
+        ax.text(0.5, 0.5, "Direction data\nnot yet available",
+                transform=ax.transAxes, ha='center', fontsize=12)
+
+    ax.set_xlabel('NuminaMath Fraction in Mix')
+    ax.set_ylabel('Cosine with NM Reference', color='#2196F3')
+    ax.set_title('(b) Direction + Effective Perturbation vs Mix Ratio')
+    ax.set_xlim(-0.05, 1.05)
+    ax.grid(True, alpha=0.3)
+
+    fig.tight_layout()
+    fig.savefig(os.path.join(FIG_DIR, "fig10_mixing_intervention.png"), dpi=200, bbox_inches='tight')
+    plt.close(fig)
+    print("  Saved fig10_mixing_intervention.png")
+
+
 def main():
     os.makedirs(FIG_DIR, exist_ok=True)
 
@@ -781,6 +1136,9 @@ def main():
     fig6_openr1_cliff(exp_log)
     fig7_cosine_divergence(direction_data)
     fig_source_similarity_summary(direction_data)
+    fig8_predictive_probes()
+    fig9_truncation_control(exp_log)
+    fig10_mixing_intervention(exp_log)
 
     print("\nAll figures saved to:", FIG_DIR)
 
