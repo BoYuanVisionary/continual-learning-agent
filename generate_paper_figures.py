@@ -42,18 +42,21 @@ SOURCE_COLORS = {
     "numinamath_hard": "#4CAF50",  # green
     "numinamath_comp": "#9C27B0",  # purple
     "openr1": "#F44336",           # red
+    "codealpaca": "#FF9800",       # orange
 }
 SOURCE_MARKERS = {
     "numinamath": "o",
     "numinamath_hard": "s",
     "numinamath_comp": "D",
     "openr1": "^",
+    "codealpaca": "P",
 }
 SOURCE_LABELS = {
     "numinamath": "NuminaMath",
     "numinamath_hard": "NuminaMath-Hard",
     "numinamath_comp": "NuminaMath-Comp",
     "openr1": "OpenR1",
+    "codealpaca": "CodeAlpaca",
 }
 
 plt.rcParams.update({
@@ -540,7 +543,7 @@ def fig6_openr1_cliff(exp_log):
                                          "experiment_name": f"sft_openr1_n{n_val}_r8_lr5e-5_ep1"}))
             seen_ns.add(n_val)
 
-    openr1_exps.sort()
+    openr1_exps.sort(key=lambda x: x[0])
 
     # Panel (a): ORZ accuracy vs N
     ax = axes[0]
@@ -561,7 +564,7 @@ def fig6_openr1_cliff(exp_log):
         if parse_source(name) != "numinamath" or not is_standard_config(name):
             continue
         nm_exps.append((parse_n(name), exp))
-    nm_exps.sort()
+    nm_exps.sort(key=lambda x: x[0])
     if nm_exps:
         nm_ns = [e[0] for e in nm_exps]
         nm_accs = [e[1].get("orz_accuracy", 0) for e in nm_exps]
@@ -874,8 +877,8 @@ def fig9_truncation_control(exp_log):
 
     # Panel (a): ORZ accuracy comparison
     ax = axes[0]
-    orig_exps.sort()
-    trunc_exps.sort()
+    orig_exps.sort(key=lambda x: x[0])
+    trunc_exps.sort(key=lambda x: x[0])
 
     if orig_exps:
         ns_o = [e[0] for e in orig_exps]
@@ -889,7 +892,7 @@ def fig9_truncation_control(exp_log):
     # NuminaMath for reference
     nm_exps = [(parse_n(e.get("experiment_name", "")), e) for e in exp_log
                if parse_source(e.get("experiment_name", "")) == "numinamath" and is_standard_config(e.get("experiment_name", ""))]
-    nm_exps.sort()
+    nm_exps.sort(key=lambda x: x[0])
     if nm_exps:
         ax.plot([e[0] for e in nm_exps], [e[1].get("orz_accuracy", 0) for e in nm_exps],
                 '--D', color=SOURCE_COLORS["numinamath"], alpha=0.5, label='NuminaMath (ref)')
@@ -1113,6 +1116,399 @@ def fig10_mixing_intervention(exp_log):
     print("  Saved fig10_mixing_intervention.png")
 
 
+def fig11_7b_comparison(exp_log):
+    """Fig 11: 7B vs 3B comparison — ORZ curves and 7B cosine heatmap."""
+    # Load 7B direction analysis
+    dir_7b_path = os.path.join(RESULTS_DIR, "direction_analysis_7b.json")
+    has_7b_dirs = os.path.exists(dir_7b_path)
+    dir_7b = None
+    if has_7b_dirs:
+        with open(dir_7b_path) as f:
+            dir_7b = json.load(f)
+
+    # Load 7B eval results
+    eval_7b = {}
+    for fname in os.listdir(RESULTS_DIR):
+        if fname.endswith("_7b_eval.json") or (fname.endswith("_eval.json") and "_7b" in fname):
+            with open(os.path.join(RESULTS_DIR, fname)) as f:
+                data = json.load(f)
+            exp_name = data.get("experiment_name", fname.replace("_eval.json", ""))
+            eval_7b[exp_name] = data
+
+    fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+
+    # Panel (a): ORZ vs N for 7B NM/OR1, overlaid with 3B
+    ax = axes[0]
+
+    # 3B data from exp_log
+    for source, label, ls in [("numinamath", "NM (3B)", "--"), ("openr1", "OR1 (3B)", "--")]:
+        data_points = []
+        for exp in exp_log:
+            name = exp.get("experiment_name", exp.get("name", ""))
+            if not is_standard_config(name) or "_7b" in name:
+                continue
+            if parse_source(name) != source:
+                continue
+            n_val = parse_n(name)
+            orz = exp.get("orz_accuracy")
+            if orz is not None and n_val in [500, 1000, 2000, 5000]:
+                data_points.append((n_val, orz))
+        if data_points:
+            data_points.sort()
+            ax.plot([d[0] for d in data_points], [d[1] for d in data_points],
+                    ls, color=SOURCE_COLORS[source], alpha=0.5, linewidth=1.5,
+                    marker=SOURCE_MARKERS[source], markersize=5, label=label)
+
+    # 7B data
+    for source, label in [("numinamath", "NM (7B)"), ("openr1", "OR1 (7B)")]:
+        data_points = []
+        for name, data in eval_7b.items():
+            if parse_source(name) != source or "_7b" not in name:
+                continue
+            n_val = parse_n(name)
+            orz = data.get("orz", {}).get("accuracy")
+            if orz is not None:
+                data_points.append((n_val, orz))
+        # Also check exp_log for 7B entries
+        for exp in exp_log:
+            name = exp.get("experiment_name", exp.get("name", ""))
+            if "_7b" not in name or parse_source(name) != source:
+                continue
+            n_val = parse_n(name)
+            orz = exp.get("orz_accuracy")
+            if orz is not None and n_val not in [d[0] for d in data_points]:
+                data_points.append((n_val, orz))
+
+        if data_points:
+            data_points.sort()
+            ax.plot([d[0] for d in data_points], [d[1] for d in data_points],
+                    '-', color=SOURCE_COLORS[source], linewidth=2,
+                    marker=SOURCE_MARKERS[source], markersize=8, label=label)
+
+    ax.set_xlabel('Number of SFT Samples (N)')
+    ax.set_ylabel('ORZ Math Accuracy')
+    ax.set_title('(a) ORZ Accuracy: 3B vs 7B')
+    ax.set_xscale('log')
+    ax.legend(fontsize=9)
+    ax.grid(True, alpha=0.3)
+
+    # Panel (b): 7B cosine heatmap
+    ax = axes[1]
+    if dir_7b and "cosine_matrix" in dir_7b:
+        matrix_data = dir_7b["cosine_matrix"]
+        exp_order = matrix_data.get("experiment_order", [])
+        matrix = matrix_data.get("matrix", {})
+        n = len(exp_order)
+        if n > 0:
+            cos_mat = np.zeros((n, n))
+            for i, n1 in enumerate(exp_order):
+                for j, n2 in enumerate(exp_order):
+                    cos_mat[i, j] = matrix.get(n1, {}).get(n2, 0)
+
+            short_labels = []
+            for name in exp_order:
+                source = parse_source(name)
+                n_val = parse_n(name)
+                abbrev = {"numinamath": "NM", "openr1": "OR1"}
+                short_labels.append(f"{abbrev.get(source, source)}-{n_val}")
+
+            im = ax.imshow(cos_mat, cmap='RdYlBu_r', vmin=0, vmax=1, aspect='auto')
+            fig.colorbar(im, ax=ax, shrink=0.8, label='Cosine Similarity')
+            ax.set_xticks(range(n))
+            ax.set_xticklabels(short_labels, rotation=90, fontsize=8)
+            ax.set_yticks(range(n))
+            ax.set_yticklabels(short_labels, fontsize=8)
+
+            # Add block borders
+            sources_in_order = [parse_source(name) for name in exp_order]
+            prev_source = sources_in_order[0]
+            for i in range(1, n):
+                if sources_in_order[i] != prev_source:
+                    ax.axhline(y=i - 0.5, color='black', linewidth=2)
+                    ax.axvline(x=i - 0.5, color='black', linewidth=2)
+                    prev_source = sources_in_order[i]
+
+            if n <= 20:
+                for i in range(n):
+                    for j in range(n):
+                        color = 'white' if cos_mat[i, j] > 0.7 or cos_mat[i, j] < 0.3 else 'black'
+                        ax.text(j, i, f'{cos_mat[i, j]:.2f}', ha='center', va='center',
+                                fontsize=6, color=color)
+        ax.set_title('(b) 7B Pairwise Cosine Similarity')
+    else:
+        ax.text(0.5, 0.5, "7B direction data\nnot yet available",
+                transform=ax.transAxes, ha='center', fontsize=12)
+        ax.set_title('(b) 7B Cosine Heatmap')
+
+    fig.tight_layout()
+    fig.savefig(os.path.join(FIG_DIR, "fig11_7b_comparison.png"), dpi=200, bbox_inches='tight')
+    plt.close(fig)
+    print("  Saved fig11_7b_comparison.png")
+
+
+def fig12_code_domain(exp_log):
+    """Fig 12: Code vs math direction analysis."""
+    code_dir_path = os.path.join(RESULTS_DIR, "direction_analysis_code.json")
+    if not os.path.exists(code_dir_path):
+        print("  Skipping fig12 — no code direction data yet")
+        return
+
+    with open(code_dir_path) as f:
+        code_dir = json.load(f)
+
+    fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+
+    # Panel (a): Code vs math direction cosines (bar chart)
+    ax = axes[0]
+    code_vs_math = code_dir.get("code_vs_math_cosines", {})
+    code_vs_code = code_dir.get("code_vs_code_cosines", {})
+    math_vs_math = code_dir.get("math_vs_math_cosines", {})
+
+    # Group: code-math, code-code, math-math (same source), math-math (cross source)
+    categories = []
+    values = []
+    colors = []
+
+    # Code vs Math
+    for key, val in sorted(code_vs_math.items()):
+        categories.append(key.replace("_", " ").replace("vs", "vs\n"))
+        values.append(val)
+        colors.append(SOURCE_COLORS["codealpaca"])
+
+    # Code vs Code
+    for key, val in sorted(code_vs_code.items()):
+        categories.append(key.replace("_", " ").replace("vs", "vs\n"))
+        values.append(val)
+        colors.append("#FFB74D")  # lighter orange
+
+    # Math vs Math
+    for key, val in sorted(math_vs_math.items()):
+        nm_nm = "NM" in key.split("_vs_")[0] and "NM" in key.split("_vs_")[1] if "_vs_" in key else False
+        categories.append(key.replace("_", " ").replace("vs", "vs\n"))
+        values.append(val)
+        colors.append("#64B5F6" if nm_nm else "#EF5350")
+
+    if categories:
+        # Limit to most interesting comparisons if too many
+        if len(categories) > 15:
+            # Keep first 6 code-math, 3 code-code, 6 math-math
+            categories = categories[:15]
+            values = values[:15]
+            colors = colors[:15]
+
+        bars = ax.bar(range(len(categories)), values, color=colors, edgecolor='black',
+                      linewidth=0.5, alpha=0.8)
+        ax.set_xticks(range(len(categories)))
+        ax.set_xticklabels(categories, rotation=45, ha='right', fontsize=6)
+        ax.set_ylabel('Cosine Similarity')
+        ax.set_title('(a) Direction Cosines: Code vs Math')
+        ax.axhline(y=0.5, color='gray', linestyle=':', alpha=0.5)
+        ax.grid(True, alpha=0.3, axis='y')
+
+        # Add legend
+        from matplotlib.patches import Patch
+        legend_elements = [
+            Patch(facecolor=SOURCE_COLORS["codealpaca"], label='Code vs Math'),
+            Patch(facecolor="#FFB74D", label='Code vs Code'),
+            Patch(facecolor="#64B5F6", label='Math vs Math (same)'),
+            Patch(facecolor="#EF5350", label='Math vs Math (cross)'),
+        ]
+        ax.legend(handles=legend_elements, fontsize=8, loc='upper right')
+
+    # Panel (b): Degradation comparison — code vs math at same N
+    ax = axes[1]
+    # Load code experiment eval results
+    code_results = {}
+    for fname in os.listdir(RESULTS_DIR):
+        if "codealpaca" in fname and fname.endswith("_eval.json"):
+            with open(os.path.join(RESULTS_DIR, fname)) as f:
+                data = json.load(f)
+            name = data.get("experiment_name", fname.replace("_eval.json", ""))
+            code_results[name] = data
+
+    # Also check exp_log
+    for exp in exp_log:
+        name = exp.get("experiment_name", exp.get("name", ""))
+        if "codealpaca" in name:
+            if name not in code_results:
+                code_results[name] = exp
+
+    # Plot code SFT ORZ accuracy vs N
+    code_data = []
+    for name, data in code_results.items():
+        n_val = parse_n(name)
+        orz = data.get("orz", {}).get("accuracy") if isinstance(data.get("orz"), dict) else data.get("orz_accuracy")
+        if orz is not None and n_val > 0:
+            code_data.append((n_val, orz))
+
+    if code_data:
+        code_data.sort()
+        ax.plot([d[0] for d in code_data], [d[1] for d in code_data],
+                '-P', color=SOURCE_COLORS["codealpaca"], linewidth=2, markersize=10,
+                label='CodeAlpaca (code SFT)')
+
+    # NuminaMath for comparison
+    nm_data = []
+    for exp in exp_log:
+        name = exp.get("experiment_name", exp.get("name", ""))
+        if parse_source(name) == "numinamath" and is_standard_config(name) and "_7b" not in name:
+            n_val = parse_n(name)
+            orz = exp.get("orz_accuracy")
+            if orz is not None and n_val in [500, 1000, 2000, 5000]:
+                nm_data.append((n_val, orz))
+    if nm_data:
+        nm_data.sort()
+        ax.plot([d[0] for d in nm_data], [d[1] for d in nm_data],
+                '-o', color=SOURCE_COLORS["numinamath"], linewidth=1.5, markersize=7,
+                alpha=0.7, label='NuminaMath (math SFT)')
+
+    # OpenR1 for comparison
+    or_data = []
+    for exp in exp_log:
+        name = exp.get("experiment_name", exp.get("name", ""))
+        if parse_source(name) == "openr1" and is_standard_config(name) and "_7b" not in name:
+            n_val = parse_n(name)
+            orz = exp.get("orz_accuracy")
+            if orz is not None and n_val in [500, 1000, 2000, 5000]:
+                or_data.append((n_val, orz))
+    if or_data:
+        or_data.sort()
+        ax.plot([d[0] for d in or_data], [d[1] for d in or_data],
+                '-^', color=SOURCE_COLORS["openr1"], linewidth=1.5, markersize=7,
+                alpha=0.7, label='OpenR1 (math SFT)')
+
+    ax.axhline(y=0.2891, color='gray', linestyle=':', alpha=0.5, label='Baseline')
+    ax.set_xlabel('Number of SFT Samples (N)')
+    ax.set_ylabel('ORZ Math Accuracy')
+    ax.set_title('(b) Cross-Domain SFT Degradation on Math')
+    ax.set_xscale('log')
+    ax.legend(fontsize=9)
+    ax.grid(True, alpha=0.3)
+
+    fig.tight_layout()
+    fig.savefig(os.path.join(FIG_DIR, "fig12_code_domain.png"), dpi=200, bbox_inches='tight')
+    plt.close(fig)
+    print("  Saved fig12_code_domain.png")
+
+
+def fig13_cliff_seeds(exp_log):
+    """Fig 13: OR1 N=2000 cliff across multiple seeds with error bars."""
+    # Collect all OR1 N=2000 results (seed 42 original + seeds 1,2,3)
+    seed_results = []
+
+    # Original seed=42
+    for exp in exp_log:
+        name = exp.get("experiment_name", exp.get("name", ""))
+        if name == "sft_openr1_n2000_r8_lr5e-5_ep1":
+            orz = exp.get("orz_accuracy")
+            if orz is not None:
+                seed_results.append({"seed": 42, "orz": orz, "name": name})
+
+    # Seed variants
+    for seed in [1, 2, 3]:
+        name = f"sft_openr1_n2000_r8_lr5e-5_ep1_seed{seed}"
+        # Check exp_log
+        for exp in exp_log:
+            ename = exp.get("experiment_name", exp.get("name", ""))
+            if ename == name:
+                orz = exp.get("orz_accuracy")
+                if orz is not None:
+                    seed_results.append({"seed": seed, "orz": orz, "name": name})
+                break
+        else:
+            # Check eval files
+            eval_path = os.path.join(RESULTS_DIR, f"{name}_eval.json")
+            if os.path.exists(eval_path):
+                with open(eval_path) as f:
+                    data = json.load(f)
+                orz = data.get("orz", {}).get("accuracy")
+                if orz is not None:
+                    seed_results.append({"seed": seed, "orz": orz, "name": name})
+
+    if len(seed_results) < 2:
+        print("  Skipping fig13 — insufficient seed data for cliff replication")
+        return
+
+    fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+
+    # Panel (a): Individual seed ORZ accuracy
+    ax = axes[0]
+    seeds = [r["seed"] for r in seed_results]
+    orz_vals = [r["orz"] for r in seed_results]
+
+    ax.bar(range(len(seeds)), orz_vals, color=SOURCE_COLORS["openr1"], alpha=0.7,
+           edgecolor='black', linewidth=0.5)
+    ax.set_xticks(range(len(seeds)))
+    ax.set_xticklabels([f"Seed {s}" for s in seeds])
+    ax.set_ylabel('ORZ Math Accuracy')
+    ax.set_title('(a) OR1 N=2000 Cliff Across Seeds')
+
+    mean_orz = np.mean(orz_vals)
+    std_orz = np.std(orz_vals)
+    ax.axhline(y=mean_orz, color='black', linestyle='--', alpha=0.7,
+               label=f'Mean: {mean_orz:.1%} +/- {std_orz:.1%}')
+    ax.axhline(y=0.2891, color='gray', linestyle=':', alpha=0.5, label='Baseline')
+    ax.legend()
+    ax.grid(True, alpha=0.3, axis='y')
+
+    # Panel (b): Comparison with NM N=2000 seeds
+    ax = axes[1]
+    nm_seed_results = []
+    for exp in exp_log:
+        name = exp.get("experiment_name", exp.get("name", ""))
+        if "numinamath" in name and "n2000" in name and is_standard_config(name) and "_7b" not in name:
+            orz = exp.get("orz_accuracy")
+            if orz is not None:
+                seed_match = re.search(r'seed(\d+)', name)
+                seed_val = int(seed_match.group(1)) if seed_match else 42
+                nm_seed_results.append({"seed": seed_val, "orz": orz})
+
+    # Also check eval files for NM seeds
+    for seed in [1, 2, 3]:
+        name = f"sft_numinamath_n2000_r8_lr5e-5_ep1_seed{seed}"
+        found = any(r.get("seed") == seed for r in nm_seed_results)
+        if not found:
+            eval_path = os.path.join(RESULTS_DIR, f"{name}_eval.json")
+            if os.path.exists(eval_path):
+                with open(eval_path) as f:
+                    data = json.load(f)
+                orz = data.get("orz", {}).get("accuracy")
+                if orz is not None:
+                    nm_seed_results.append({"seed": seed, "orz": orz})
+
+    bar_width = 0.35
+    x_pos = np.arange(2)
+    or_mean = np.mean(orz_vals)
+    or_std = np.std(orz_vals)
+
+    if nm_seed_results:
+        nm_vals = [r["orz"] for r in nm_seed_results]
+        nm_mean = np.mean(nm_vals)
+        nm_std = np.std(nm_vals)
+        ax.bar(x_pos, [nm_mean, or_mean], bar_width * 2,
+               yerr=[nm_std, or_std], capsize=10,
+               color=[SOURCE_COLORS["numinamath"], SOURCE_COLORS["openr1"]],
+               alpha=0.7, edgecolor='black', linewidth=0.5)
+        ax.set_xticks(x_pos)
+        ax.set_xticklabels(['NuminaMath\nN=2000', 'OpenR1\nN=2000'])
+    else:
+        ax.bar([0], [or_mean], bar_width * 2, yerr=[or_std], capsize=10,
+               color=[SOURCE_COLORS["openr1"]], alpha=0.7, edgecolor='black')
+        ax.set_xticks([0])
+        ax.set_xticklabels(['OpenR1\nN=2000'])
+
+    ax.set_ylabel('ORZ Math Accuracy')
+    ax.set_title(f'(b) N=2000 Cliff: Mean +/- Std ({len(seed_results)} seeds)')
+    ax.axhline(y=0.2891, color='gray', linestyle=':', alpha=0.5, label='Baseline')
+    ax.legend()
+    ax.grid(True, alpha=0.3, axis='y')
+
+    fig.tight_layout()
+    fig.savefig(os.path.join(FIG_DIR, "fig13_cliff_seeds.png"), dpi=200, bbox_inches='tight')
+    plt.close(fig)
+    print("  Saved fig13_cliff_seeds.png")
+
+
 def main():
     os.makedirs(FIG_DIR, exist_ok=True)
 
@@ -1139,6 +1535,9 @@ def main():
     fig8_predictive_probes()
     fig9_truncation_control(exp_log)
     fig10_mixing_intervention(exp_log)
+    fig11_7b_comparison(exp_log)
+    fig12_code_domain(exp_log)
+    fig13_cliff_seeds(exp_log)
 
     print("\nAll figures saved to:", FIG_DIR)
 

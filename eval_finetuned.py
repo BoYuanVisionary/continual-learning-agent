@@ -21,7 +21,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import PeftModel
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_NAME = "Qwen/Qwen2.5-3B-Instruct"
+DEFAULT_MODEL_NAME = "Qwen/Qwen2.5-3B-Instruct"
 
 # Import grading utilities
 from math_grader import math_equal
@@ -36,6 +36,14 @@ BASELINES = {
     "toolalpaca_real_func_acc": 0.8922,
     "toolalpaca_real_pass_rate": 0.8725,
 }
+BASELINES_7B = {
+    "orz_accuracy": 0.3916,
+    "sciknoweval_accuracy": 0.3582,
+    "toolalpaca_sim_func_acc": 0.80,
+    "toolalpaca_sim_pass_rate": 0.77,
+    "toolalpaca_real_func_acc": 0.8860,
+    "toolalpaca_real_pass_rate": 0.8860,
+}
 FORGETTING_THRESHOLD = 0.03  # 3% degradation threshold
 
 
@@ -45,6 +53,8 @@ def parse_args():
                         help="Path to LoRA adapter directory")
     parser.add_argument("--experiment_name", type=str, required=True,
                         help="Experiment name for results")
+    parser.add_argument("--model_name", type=str, default=DEFAULT_MODEL_NAME,
+                        help="Base model name (default: Qwen2.5-3B-Instruct)")
     parser.add_argument("--batch_size", type=int, default=64,
                         help="Batch size for inference")
     parser.add_argument("--orz_samples", type=int, default=1024,
@@ -55,16 +65,16 @@ def parse_args():
     return parser.parse_args()
 
 
-def load_finetuned_model(adapter_path):
+def load_finetuned_model(adapter_path, model_name=DEFAULT_MODEL_NAME):
     """Load base model + LoRA adapter."""
-    print(f"Loading base model: {MODEL_NAME}")
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, trust_remote_code=True)
+    print(f"Loading base model: {model_name}")
+    tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "left"
 
     base_model = AutoModelForCausalLM.from_pretrained(
-        MODEL_NAME,
+        model_name,
         torch_dtype=torch.bfloat16,
         attn_implementation="sdpa",
         trust_remote_code=True,
@@ -324,28 +334,37 @@ def eval_toolalpaca(model, tokenizer, batch_size=32):
     return {"simulated": sim_results, "real": real_results}
 
 
-def check_validity(results):
+def check_validity(results, model_name=DEFAULT_MODEL_NAME):
     """Check if results stay within 3% of baseline."""
+    baselines = BASELINES_7B if "7B" in model_name else BASELINES
     issues = []
 
     if "sciknoweval" in results:
         acc = results["sciknoweval"]["accuracy"]
-        threshold = BASELINES["sciknoweval_accuracy"] - FORGETTING_THRESHOLD
+        baseline_val = baselines.get("sciknoweval_accuracy")
+        if baseline_val is None:
+            issues.append(f"SciKnowEval: baseline not yet available for {model_name}")
+            return len(issues) == 0, issues
+        threshold = baseline_val - FORGETTING_THRESHOLD
         if acc < threshold:
-            issues.append(f"SciKnowEval: {acc:.4f} < {threshold:.4f} (baseline {BASELINES['sciknoweval_accuracy']:.4f})")
+            issues.append(f"SciKnowEval: {acc:.4f} < {threshold:.4f} (baseline {baseline_val:.4f})")
 
     if "toolalpaca" in results:
         ta = results["toolalpaca"]
         if "simulated" in ta and ta["simulated"]:
             fa = ta["simulated"]["func_accuracy"]
-            thr = BASELINES["toolalpaca_sim_func_acc"] - FORGETTING_THRESHOLD
-            if fa < thr:
-                issues.append(f"ToolAlpaca Sim func_acc: {fa:.4f} < {thr:.4f}")
+            bl = baselines.get("toolalpaca_sim_func_acc")
+            if bl is not None:
+                thr = bl - FORGETTING_THRESHOLD
+                if fa < thr:
+                    issues.append(f"ToolAlpaca Sim func_acc: {fa:.4f} < {thr:.4f}")
         if "real" in ta and ta["real"]:
             fa = ta["real"]["func_accuracy"]
-            thr = BASELINES["toolalpaca_real_func_acc"] - FORGETTING_THRESHOLD
-            if fa < thr:
-                issues.append(f"ToolAlpaca Real func_acc: {fa:.4f} < {thr:.4f}")
+            bl = baselines.get("toolalpaca_real_func_acc")
+            if bl is not None:
+                thr = bl - FORGETTING_THRESHOLD
+                if fa < thr:
+                    issues.append(f"ToolAlpaca Real func_acc: {fa:.4f} < {thr:.4f}")
 
     return len(issues) == 0, issues
 
@@ -356,7 +375,7 @@ def main():
     os.makedirs(results_dir, exist_ok=True)
 
     # Load model
-    model, tokenizer = load_finetuned_model(args.adapter_path)
+    model, tokenizer = load_finetuned_model(args.adapter_path, args.model_name)
 
     results = {
         "experiment_name": args.experiment_name,
@@ -375,7 +394,7 @@ def main():
         results["toolalpaca"] = eval_toolalpaca(model, tokenizer, min(args.batch_size, 32))
 
     # Check validity
-    valid, issues = check_validity(results)
+    valid, issues = check_validity(results, args.model_name)
     results["valid"] = valid
     results["forgetting_issues"] = issues
 

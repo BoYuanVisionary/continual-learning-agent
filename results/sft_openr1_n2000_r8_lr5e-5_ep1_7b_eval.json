@@ -1,0 +1,33 @@
+{
+  "experiment_name": "sft_openr1_n2000_r8_lr5e-5_ep1_7b",
+  "adapter_path": "checkpoints/sft_openr1_n2000_r8_lr5e-5_ep1_7b/final_adapter",
+  "timestamp": "2026-02-24 17:43:09",
+  "orz": {
+    "accuracy": 0.306640625,
+    "correct": 314,
+    "total": 1024
+  },
+  "sciknoweval": {
+    "accuracy": 0.34548335974643424,
+    "correct": 654,
+    "total": 1893
+  },
+  "toolalpaca": {
+    "simulated": {
+      "func_accuracy": 0.81,
+      "func_correct": 81,
+      "pass_rate": 0.78,
+      "pass_count": 78,
+      "total": 100
+    },
+    "real": {
+      "func_accuracy": 0.868421052631579,
+      "func_correct": 99,
+      "pass_rate": 0.868421052631579,
+      "pass_count": 99,
+      "total": 114
+    }
+  },
+  "valid": true,
+  "forgetting_issues": []
+}

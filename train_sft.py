@@ -20,7 +20,7 @@ from peft import LoraConfig, get_peft_model, TaskType
 from trl import SFTTrainer, SFTConfig
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_NAME = "Qwen/Qwen2.5-3B-Instruct"
+DEFAULT_MODEL_NAME = "Qwen/Qwen2.5-3B-Instruct"
 
 MATH_SYSTEM_PROMPT = (
     "You are a helpful math assistant. Solve the problem step by step, "
@@ -32,8 +32,10 @@ def parse_args():
     parser = argparse.ArgumentParser(description="SFT training with LoRA")
     parser.add_argument("--num_samples", type=int, required=True,
                         help="Number of training samples")
+    parser.add_argument("--model_name", type=str, default=DEFAULT_MODEL_NAME,
+                        help="Model name or path (default: Qwen2.5-3B-Instruct)")
     parser.add_argument("--data_source", type=str, default="numinamath",
-                        choices=["numinamath", "numinamath_comp", "numinamath_hard", "openr1", "orz_self", "orz_reject", "openr1_truncated", "mixed"],
+                        choices=["numinamath", "numinamath_comp", "numinamath_hard", "openr1", "orz_self", "orz_reject", "openr1_truncated", "mixed", "codealpaca"],
                         help="Data source for training")
     parser.add_argument("--mix_ratio", type=float, default=0.5,
                         help="For 'mixed' source: fraction from NuminaMath (0.0=all OpenR1, 1.0=all NM)")
@@ -334,16 +336,48 @@ def load_mixed_data(num_samples, mix_ratio=0.5, seed=42):
     return combined
 
 
+def load_codealpaca_data(num_samples, seed=42):
+    """Load CodeAlpaca-20k data and format as chat messages."""
+    data_path = os.path.join(SCRIPT_DIR, "data", "codealpaca", "codealpaca_20k.json")
+    with open(data_path) as f:
+        data = json.load(f)
+
+    rng = random.Random(seed)
+    rng.shuffle(data)
+    selected = data[:num_samples]
+
+    code_system_prompt = (
+        "You are a helpful coding assistant. Write clean, correct code and "
+        "explain your solution step by step."
+    )
+
+    formatted = []
+    for ex in selected:
+        user_content = ex["instruction"]
+        if ex.get("input", "").strip():
+            user_content += f"\n\nInput:\n{ex['input']}"
+        messages = [
+            {"role": "system", "content": code_system_prompt},
+            {"role": "user", "content": user_content},
+            {"role": "assistant", "content": ex["output"]},
+        ]
+        formatted.append({"messages": messages})
+
+    print(f"Loaded {len(formatted)} CodeAlpaca examples")
+    return formatted
+
+
 def main():
     args = parse_args()
     random.seed(args.seed)
     torch.manual_seed(args.seed)
 
     # Generate experiment name
+    model_suffix = "_7b" if "7B" in args.model_name else ""
     if args.experiment_name is None:
         args.experiment_name = (
             f"sft_{args.data_source}_n{args.num_samples}_r{args.lora_rank}_"
-            f"lr{args.lr}_ep{args.epochs}"
+            f"lr{args.lr}_ep{args.epochs}{model_suffix}"
         )
 
     checkpoint_dir = os.path.join(SCRIPT_DIR, "checkpoints", args.experiment_name)
@@ -379,6 +413,8 @@ def main():
         train_data = load_openr1_truncated_data(args.num_samples, args.seed)
     elif args.data_source == "mixed":
         train_data = load_mixed_data(args.num_samples, args.mix_ratio, args.seed)
+    elif args.data_source == "codealpaca":
+        train_data = load_codealpaca_data(args.num_samples, args.seed)
     else:
         raise ValueError(f"Unknown data source: {args.data_source}")
 
@@ -393,14 +429,14 @@ def main():
         json.dump(data_info, f, indent=2)
 
     # Load model and tokenizer
-    print(f"\nLoading model: {MODEL_NAME}")
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, trust_remote_code=True)
+    print(f"\nLoading model: {args.model_name}")
+    tokenizer = AutoTokenizer.from_pretrained(args.model_name, trust_remote_code=True)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"  # Right padding for training
 
     model = AutoModelForCausalLM.from_pretrained(
-        MODEL_NAME,
+        args.model_name,
         torch_dtype=torch.bfloat16,
         attn_implementation="sdpa",
         trust_remote_code=True,
@@ -484,7 +520,7 @@ def main():
     # Save training results
     train_info = {
         "experiment_name": args.experiment_name,
-        "model": MODEL_NAME,
+        "model": args.model_name,
         "data_source": args.data_source,
         "num_samples": args.num_samples,
         "lora_rank": args.lora_rank,

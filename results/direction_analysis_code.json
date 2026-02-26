@@ -1,0 +1,72 @@
+{
+  "code_experiments": {
+    "sft_codealpaca_n1000_r8_lr5e-5_ep1": {
+      "frob_norm": 0.8258197903633118,
+      "num_samples": 1000,
+      "cosines_with_math": {
+        "sft_numinamath_n2000_r8_lr5e-5_ep1_seed3": 0.012055878527462482,
+        "sft_openr1_n2000_r8_lr5e-5_ep1_seed1": 0.005472821649163961,
+        "sft_openr1_n2000_r8_lr5e-5_ep1_seed2": 0.005671167280524969,
+        "sft_openr1_n2000_r8_lr5e-5_ep1_seed3": 0.006342336069792509
+      }
+    },
+    "sft_codealpaca_n2000_r8_lr5e-5_ep1": {
+      "frob_norm": 1.0228058099746704,
+      "num_samples": 2000,
+      "cosines_with_math": {
+        "sft_numinamath_n2000_r8_lr5e-5_ep1_seed3": 0.013659371063113213,
+        "sft_openr1_n2000_r8_lr5e-5_ep1_seed1": 0.006161394529044628,
+        "sft_openr1_n2000_r8_lr5e-5_ep1_seed2": 0.0061057573184370995,
+        "sft_openr1_n2000_r8_lr5e-5_ep1_seed3": 0.006919353734701872
+      }
+    },
+    "sft_codealpaca_n5000_r8_lr5e-5_ep1": {
+      "frob_norm": 1.151410460472107,
+      "num_samples": 5000,
+      "cosines_with_math": {
+        "sft_numinamath_n2000_r8_lr5e-5_ep1_seed3": 0.014849257655441761,
+        "sft_openr1_n2000_r8_lr5e-5_ep1_seed1": 0.006657712161540985,
+        "sft_openr1_n2000_r8_lr5e-5_ep1_seed2": 0.006692232098430395,
+        "sft_openr1_n2000_r8_lr5e-5_ep1_seed3": 0.007425778545439243
+      }
+    },
+    "sft_codealpaca_n500_r8_lr5e-5_ep1": {
+      "frob_norm": 0.5808534026145935,
+      "num_samples": 500,
+      "cosines_with_math": {
+        "sft_numinamath_n2000_r8_lr5e-5_ep1_seed3": 0.008416660130023956,
+        "sft_openr1_n2000_r8_lr5e-5_ep1_seed1": 0.003698556451126933,
+        "sft_openr1_n2000_r8_lr5e-5_ep1_seed2": 0.004201289266347885,
+        "sft_openr1_n2000_r8_lr5e-5_ep1_seed3": 0.004574306774884462
+      }
+    }
+  },
+  "code_vs_math_cosines": {
+    "code_1000_vs_nm_2000": 0.012055878527462482,
+    "code_1000_vs_or1_2000": 0.006342336069792509,
+    "code_2000_vs_nm_2000": 0.013659371063113213,
+    "code_2000_vs_or1_2000": 0.006919353734701872,
+    "code_5000_vs_nm_2000": 0.014849257655441761,
+    "code_5000_vs_or1_2000": 0.007425778545439243,
+    "code_500_vs_nm_2000": 0.008416660130023956,
+    "code_500_vs_or1_2000": 0.004574306774884462
+  },
+  "code_vs_code_cosines": {
+    "code_1000_vs_code_2000": 0.2980743944644928,
+    "code_1000_vs_code_5000": 0.27863383293151855,
+    "code_1000_vs_code_500": 0.26861077547073364,
+    "code_2000_vs_code_5000": 0.2798934578895569,
+    "code_2000_vs_code_500": 0.23942451179027557,
+    "code_5000_vs_code_500": 0.23075571656227112
+  },
+  "math_vs_math_cosines": {
+    "NM_2000_vs_OR1_2000": 0.20162034034729004,
+    "OR1_2000_vs_OR1_2000": 0.08722584694623947
+  },
+  "summary": {
+    "code_vs_math_mean": 0.009280367812607437,
+    "code_vs_math_std": 0.0035076805740638364,
+    "code_vs_code_mean": 0.26589878151814145,
+    "code_vs_code_std": 0.023581700013042026
+  }
+}

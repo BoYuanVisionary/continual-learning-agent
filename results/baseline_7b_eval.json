@@ -1,0 +1,46 @@
+{
+  "model": "Qwen/Qwen2.5-7B-Instruct",
+  "type": "baseline",
+  "orz": {
+    "accuracy": 0.3916015625,
+    "correct": 401,
+    "total": 1024
+  },
+  "sciknoweval": {
+    "accuracy": 0.358161648177496,
+    "correct": 678,
+    "total": 1893
+  },
+  "toolalpaca": {
+    "simulated": {
+      "func_accuracy": 0.8,
+      "func_correct": 80,
+      "pass_rate": 0.77,
+      "pass_count": 77,
+      "total": 100
+    },
+    "real": {
+      "func_accuracy": 0.8859649122807017,
+      "func_correct": 101,
+      "pass_rate": 0.8859649122807017,
+      "pass_count": 101,
+      "total": 114
+    }
+  },
+  "gsm8k_strict": {
+    "accuracy": 0.909021986353298,
+    "correct": 1199,
+    "total": 1319,
+    "boxed_found": 1319,
+    "fallback_used": 0,
+    "tolerant": false
+  },
+  "gsm8k_tolerant": {
+    "accuracy": 0.9120545868081881,
+    "correct": 1203,
+    "total": 1319,
+    "boxed_found": 1319,
+    "fallback_used": 0,
+    "tolerant": true
+  }
+}

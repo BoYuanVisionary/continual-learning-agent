@@ -1,0 +1,35 @@
+{
+  "experiment_name": "sft_numinamath_n5000_r8_lr5e-5_ep1_7b",
+  "adapter_path": "checkpoints/sft_numinamath_n5000_r8_lr5e-5_ep1_7b/final_adapter",
+  "timestamp": "2026-02-24 14:19:48",
+  "orz": {
+    "accuracy": 0.3076171875,
+    "correct": 315,
+    "total": 1024
+  },
+  "sciknoweval": {
+    "accuracy": 0.3291072371896461,
+    "correct": 623,
+    "total": 1893
+  },
+  "toolalpaca": {
+    "simulated": {
+      "func_accuracy": 0.82,
+      "func_correct": 82,
+      "pass_rate": 0.79,
+      "pass_count": 79,
+      "total": 100
+    },
+    "real": {
+      "func_accuracy": 0.8947368421052632,
+      "func_correct": 102,
+      "pass_rate": 0.8947368421052632,
+      "pass_count": 102,
+      "total": 114
+    }
+  },
+  "valid": false,
+  "forgetting_issues": [
+    "SciKnowEval: baseline not yet available for Qwen/Qwen2.5-7B-Instruct"
+  ]
+}

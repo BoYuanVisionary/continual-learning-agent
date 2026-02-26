@@ -1,0 +1,113 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\citation{hu2022lora}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\citation{kirkpatrick2017overcoming,luo2023empirical}
+\citation{li2018measuring}
+\citation{hu2022lora}
+\citation{biderman2024lora}
+\citation{zhou2023lima}
+\citation{chen2023alpagasus}
+\citation{yang2024qwen}
+\@writefile{toc}{\contentsline {paragraph}{Contributions.}{2}{section*.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{2}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Experimental Setup}{2}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Model and Training}{2}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Data Sources}{2}{subsection.3.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Training data sources. All contain math CoT solutions.}}{2}{table.caption.3}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{tab:sources}{{1}{2}{Training data sources. All contain math CoT solutions}{table.caption.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Evaluation}{3}{subsection.3.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Evaluation benchmarks and baselines (Qwen2.5-3B-Instruct).}}{3}{table.caption.4}\protected@file@percent }
+\newlabel{tab:benchmarks}{{2}{3}{Evaluation benchmarks and baselines (Qwen2.5-3B-Instruct)}{table.caption.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Experiment Design}{3}{subsection.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}The Norm Paradox: Same Magnitude, Different Outcomes}{3}{section.4}\protected@file@percent }
+\newlabel{sec:norm-paradox}{{4}{3}{The Norm Paradox: Same Magnitude, Different Outcomes}{section.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Within-Source: Norm Predicts Accurately}{3}{subsection.4.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Within-source norm--accuracy correlations.}}{3}{table.caption.5}\protected@file@percent }
+\newlabel{tab:within-source}{{3}{3}{Within-source norm--accuracy correlations}{table.caption.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Across Sources: Norm Fails}{3}{subsection.4.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Cross-source norm--accuracy comparisons. At matched norms, OpenR1 degrades 4$\times $ more.}}{3}{table.caption.6}\protected@file@percent }
+\newlabel{tab:cross-source}{{4}{3}{Cross-source norm--accuracy comparisons. At matched norms, OpenR1 degrades 4$\times $ more}{table.caption.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Direction Analysis: Sources Occupy Distinct Subspaces}{3}{section.5}\protected@file@percent }
+\newlabel{sec:direction}{{5}{3}{Direction Analysis: Sources Occupy Distinct Subspaces}{section.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Pairwise Cosine Similarity}{3}{subsection.5.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Average cosine similarity by source pair.}}{4}{table.caption.7}\protected@file@percent }
+\newlabel{tab:cosine}{{5}{4}{Average cosine similarity by source pair}{table.caption.7}{}}
+\newlabel{fig:norm-vs-orz}{{1a}{4}{$\|\Delta W\|_F$ vs ORZ accuracy. Within-source correlation is strong, but cross-source, the same norm produces vastly different outcomes}{figure.caption.9}{}}
+\newlabel{sub@fig:norm-vs-orz}{{a}{4}{$\|\Delta W\|_F$ vs ORZ accuracy. Within-source correlation is strong, but cross-source, the same norm produces vastly different outcomes}{figure.caption.9}{}}
+\newlabel{fig:cosine-heatmap}{{1b}{4}{Pairwise cosine similarity heatmap showing block structure by data source}{figure.caption.9}{}}
+\newlabel{sub@fig:cosine-heatmap}{{b}{4}{Pairwise cosine similarity heatmap showing block structure by data source}{figure.caption.9}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces The norm paradox and directional structure. (a)~Norm predicts accuracy within but not across sources. (b)~LoRA weight updates cluster by data source in weight space.}}{4}{figure.caption.9}\protected@file@percent }
+\newlabel{fig:main-results}{{1}{4}{The norm paradox and directional structure. (a)~Norm predicts accuracy within but not across sources. (b)~LoRA weight updates cluster by data source in weight space}{figure.caption.9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Directions Diverge with Training Volume}{4}{subsection.5.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Cross-source cosine similarity decreases with $N$.}}{4}{table.caption.8}\protected@file@percent }
+\newlabel{tab:divergence}{{6}{4}{Cross-source cosine similarity decreases with $N$}{table.caption.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Degradation Mechanism: Format Disruption vs.\ Reasoning Loss}{4}{section.6}\protected@file@percent }
+\newlabel{sec:mechanism}{{6}{4}{Degradation Mechanism: Format Disruption vs.\ Reasoning Loss}{section.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}NuminaMath: Gradual Reasoning Degradation}{5}{subsection.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}OpenR1: Catastrophic Format Collapse}{5}{subsection.6.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces OpenR1 GSM8K format decomposition. The transition between $N{=}1{,}500$ and $N{=}2{,}000$ is catastrophic.}}{5}{table.caption.10}\protected@file@percent }
+\newlabel{tab:openr1-format}{{7}{5}{OpenR1 GSM8K format decomposition. The transition between $N{=}1{,}500$ and $N{=}2{,}000$ is catastrophic}{table.caption.10}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Cross-Domain Robustness}{5}{subsection.6.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}A Geometric Framework for SFT Degradation}{5}{section.7}\protected@file@percent }
+\newlabel{sec:framework}{{7}{5}{A Geometric Framework for SFT Degradation}{section.7}{}}
+\@writefile{toc}{\contentsline {paragraph}{Degradation efficiency.}{5}{section*.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8}The OpenR1 Cliff: A Case Study in Directional Catastrophe}{5}{section.8}\protected@file@percent }
+\newlabel{sec:cliff}{{8}{5}{The OpenR1 Cliff: A Case Study in Directional Catastrophe}{section.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}Characterizing the Transition}{5}{subsection.8.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces The OpenR1 cliff. Three things happen simultaneously between $N{=}1{,}500$ and $N{=}2{,}000$.}}{6}{table.caption.12}\protected@file@percent }
+\newlabel{tab:cliff}{{8}{6}{The OpenR1 cliff. Three things happen simultaneously between $N{=}1{,}500$ and $N{=}2{,}000$}{table.caption.12}{}}
+\newlabel{fig:cliff}{{2a}{6}{The OpenR1 cliff: ORZ, GSM8K boxed rate, and response length vs $N$}{figure.caption.13}{}}
+\newlabel{sub@fig:cliff}{{a}{6}{The OpenR1 cliff: ORZ, GSM8K boxed rate, and response length vs $N$}{figure.caption.13}{}}
+\newlabel{fig:format-decomp}{{2b}{6}{Format vs reasoning decomposition for NuminaMath and OpenR1}{figure.caption.13}{}}
+\newlabel{sub@fig:format-decomp}{{b}{6}{Format vs reasoning decomposition for NuminaMath and OpenR1}{figure.caption.13}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces The OpenR1 cliff and format decomposition. (a)~Catastrophic collapse between $N{=}1{,}500$ and $N{=}2{,}000$. (b)~Format loss dominates at the cliff; reasoning loss is cumulative.}}{6}{figure.caption.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Seed Replication}{6}{subsection.8.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.3}Truncation Control}{6}{subsection.8.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Truncation control. Truncation mitigates the cliff but doesn't eliminate the gap.}}{6}{table.caption.14}\protected@file@percent }
+\newlabel{tab:truncation}{{9}{6}{Truncation control. Truncation mitigates the cliff but doesn't eliminate the gap}{table.caption.14}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.4}Data Mixing}{6}{subsection.8.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {9}Multi-Scale Analysis: Qwen2.5-7B}{6}{section.9}\protected@file@percent }
+\newlabel{sec:7b}{{9}{6}{Multi-Scale Analysis: Qwen2.5-7B}{section.9}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Data mixing at $N{=}2{,}000$. Both accuracy and direction interpolate smoothly.}}{7}{table.caption.15}\protected@file@percent }
+\newlabel{tab:mixing}{{10}{7}{Data mixing at $N{=}2{,}000$. Both accuracy and direction interpolate smoothly}{table.caption.15}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces 7B results. The OpenR1 cliff persists but shifts to higher $N$.}}{7}{table.caption.16}\protected@file@percent }
+\newlabel{tab:7b}{{11}{7}{7B results. The OpenR1 cliff persists but shifts to higher $N$}{table.caption.16}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {10}Cross-Domain Directional Analysis}{7}{section.10}\protected@file@percent }
+\newlabel{sec:cross-domain}{{10}{7}{Cross-Domain Directional Analysis}{section.10}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {11}Statistical Robustness}{7}{section.11}\protected@file@percent }
+\newlabel{sec:robustness}{{11}{7}{Statistical Robustness}{section.11}{}}
+\@writefile{toc}{\contentsline {paragraph}{NuminaMath seed variations.}{7}{section*.18}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{OpenR1 cliff seeds.}{7}{section*.19}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Hyperparameter sensitivity.}{7}{section*.20}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {12}Practical Implications}{7}{section.12}\protected@file@percent }
+\bibstyle{plainnat}
+\bibcite{biderman2024lora}{{1}{2024}{{Biderman et~al.}}{{}}}
+\bibcite{chen2023alpagasus}{{2}{2023}{{Chen et~al.}}{{}}}
+\bibcite{chaudhary2023codealpaca}{{3}{2023}{{Chaudhary}}{{}}}
+\bibcite{hu2022lora}{{4}{2022}{{Hu et~al.}}{{}}}
+\bibcite{kirkpatrick2017overcoming}{{5}{2017}{{Kirkpatrick et~al.}}{{}}}
+\newlabel{fig:7b}{{3a}{8}{7B scale replication. The OpenR1 cliff shifts to $N{=}5{,}000$}{figure.caption.17}{}}
+\newlabel{sub@fig:7b}{{a}{8}{7B scale replication. The OpenR1 cliff shifts to $N{=}5{,}000$}{figure.caption.17}{}}
+\newlabel{fig:code}{{3b}{8}{CodeAlpaca directions are orthogonal to all math directions ($\cos {\sim }0.01$)}{figure.caption.17}{}}
+\newlabel{sub@fig:code}{{b}{8}{CodeAlpaca directions are orthogonal to all math directions ($\cos {\sim }0.01$)}{figure.caption.17}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Generality of directional structure. (a)~Qualitative patterns preserved at 7B. (b)~Cross-domain SFT confirms near-orthogonal perturbation directions.}}{8}{figure.caption.17}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {13}Limitations}{8}{section.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {14}Conclusion}{8}{section.14}\protected@file@percent }
+\bibcite{li2018measuring}{{6}{2018}{{Li et~al.}}{{}}}
+\bibcite{li2024numinamath}{{7}{2024}{{Li et~al.}}{{}}}
+\bibcite{luo2023empirical}{{8}{2023}{{Luo et~al.}}{{}}}
+\bibcite{openr1}{{9}{2024}{{Open-Reasoner}}{{}}}
+\bibcite{yang2024qwen}{{10}{2024}{{Yang et~al.}}{{}}}
+\bibcite{zhou2023lima}{{11}{2023}{{Zhou et~al.}}{{}}}
+\@writefile{toc}{\contentsline {section}{\numberline {A}Complete Experimental Results}{10}{appendix.A}\protected@file@percent }
+\newlabel{app:results}{{A}{10}{Complete Experimental Results}{appendix.A}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}NuminaMath Standard Config ($r{=}8$, LR$=5{\times }10^{-5}$, 1 epoch)}{10}{subsection.A.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}OpenR1 Standard Config}{10}{subsection.A.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}Seed Variation Details}{10}{subsection.A.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {12}{\ignorespaces NuminaMath seed variations (standard config).}}{10}{table.caption.24}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {13}{\ignorespaces OpenR1 $N{=}2{,}000$ cliff replication across 4 seeds.}}{11}{table.caption.25}\protected@file@percent }
+\gdef \@abspage@last{11}

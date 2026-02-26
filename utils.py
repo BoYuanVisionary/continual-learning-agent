@@ -6,7 +6,8 @@ import re
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-MODEL_NAME = "Qwen/Qwen2.5-3B-Instruct"
+DEFAULT_MODEL_NAME = "Qwen/Qwen2.5-3B-Instruct"
+MODEL_NAME = DEFAULT_MODEL_NAME  # backward compat
 
 
 def load_model(model_name=MODEL_NAME):

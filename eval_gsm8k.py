@@ -30,7 +30,7 @@ from math_grader import math_equal
 from utils import extract_boxed_answer
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_NAME = "Qwen/Qwen2.5-3B-Instruct"
+DEFAULT_MODEL_NAME = "Qwen/Qwen2.5-3B-Instruct"
 
 SYSTEM_PROMPT = (
     "You are a helpful math assistant. Solve the problem step by step, "
@@ -46,6 +46,8 @@ def parse_args():
                         help="Experiment name for results file naming")
     parser.add_argument("--batch_size", type=int, default=64,
                         help="Batch size for inference")
+    parser.add_argument("--model_name", type=str, default=DEFAULT_MODEL_NAME,
+                        help="Base model name (default: Qwen2.5-3B-Instruct)")
     parser.add_argument("--baseline", action="store_true",
                         help="Evaluate base model without any adapter")
     parser.add_argument("--tolerant", action="store_true",
@@ -54,16 +56,16 @@ def parse_args():
     return parser.parse_args()
 
 
-def load_finetuned_model(adapter_path):
+def load_finetuned_model(adapter_path, model_name=DEFAULT_MODEL_NAME):
     """Load base model + LoRA adapter, merge, and move to GPU."""
-    print(f"Loading base model: {MODEL_NAME}")
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, trust_remote_code=True)
+    print(f"Loading base model: {model_name}")
+    tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "left"
 
     base_model = AutoModelForCausalLM.from_pretrained(
-        MODEL_NAME,
+        model_name,
         torch_dtype=torch.bfloat16,
         attn_implementation="sdpa",
         trust_remote_code=True,
@@ -79,17 +81,17 @@ def load_finetuned_model(adapter_path):
     return model, tokenizer
 
 
-def load_base_model():
+def load_base_model(model_name=DEFAULT_MODEL_NAME):
     """Load the base model without any adapter."""
-    print(f"Loading base model (no adapter): {MODEL_NAME}")
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, trust_remote_code=True)
+    print(f"Loading base model (no adapter): {model_name}")
+    tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "left"
 
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
     model = AutoModelForCausalLM.from_pretrained(
-        MODEL_NAME,
+        model_name,
         torch_dtype=torch.bfloat16,
         attn_implementation="sdpa",
         trust_remote_code=True,
@@ -242,9 +244,9 @@ def main():
 
     # Load model
     if args.baseline:
-        model, tokenizer = load_base_model()
+        model, tokenizer = load_base_model(args.model_name)
     else:
-        model, tokenizer = load_finetuned_model(args.adapter_path)
+        model, tokenizer = load_finetuned_model(args.adapter_path, args.model_name)
 
     # Run evaluation
     gsm8k_results = eval_gsm8k(
